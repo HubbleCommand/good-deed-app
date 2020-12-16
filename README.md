@@ -1,6 +1,29 @@
 # good_deed
 
-Flutter application to share good deeds.
+Flutter application to share good deeds. 
+
+User can say another did a good deed for them: short description, image/video, etc. Every day show global good deed counter.
+
+[Thing with similar name but more like GoFundMe](https://www.goodeed.com/)
+
+Data types:
+Deeder : person who did the deed (name)
+Deed   : the good deed (doer, reciever, ranking (good, awesome, amazing, legendary), date, duration, location)
+
+Need:
+- QR code scanning / Bluetooth for easily posting a deed (recognizing users)
+
+Useful flutter resources:
+- [Toast / user "console" messages](https://flutter.dev/docs/release/breaking-changes/scaffold-messenger)
+- [Nav drawer](https://medium.com/flutter-community/flutter-vi-navigation-drawer-flutter-1-0-3a05e09b0db9)
+- [REST requests to a NodeJS + Express backend](https://carmine.dev/posts/multipartpost/)
+- [Official Nav Drawer doc](https://flutter.dev/docs/cookbook/design/drawer)
+- [Ad banner](https://codelabs.developers.google.com/codelabs/admob-ads-in-flutter#0)
+- [Bluetooth](https://blog.kuzzle.io/communicate-through-ble-using-flutter)
+- [QR code](https://pub.dev/packages/qrscan)
+- [List of all icons](https://api.flutter.dev/flutter/material/Icons-class.html)
+- [Flutter for web devs](https://flutter.dev/docs/get-started/flutter-for/web-devs)
+- [Taking pics](https://flutter.dev/docs/cookbook/plugins/picture-using-camera)
 
 ## Getting Started
 
