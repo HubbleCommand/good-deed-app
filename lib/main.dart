@@ -62,78 +62,6 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-  Drawer buildExampleDrawer(BuildContext context){
-      return Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Text('Dood'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-            ListTile(
-              title: Text('Account'),
-              leading: Icon(Icons.account_circle),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Global Deeds'),
-              leading: Icon(Icons.public_rounded),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Privacy Policy'),
-              leading: Icon(Icons.policy),
-              onTap: () {
-                // Update the state of the app
-                // ...
-                // Then close the drawer
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              title: Text('Reset counter'),
-              leading: Icon(Icons.refresh_sharp),
-              onTap: () {
-                setState(() {
-                  _counter = 0;
-                });
-                Navigator.pop(context);
-
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: const Text('Reset your counter!'),
-                  duration: const Duration(seconds: 3),
-                  action: SnackBarAction(
-                    label: 'ACTION',
-                    onPressed: () { },
-                  ),
-                ));
-              },
-            ),
-            ListTile(
-              title: Text('Close'),
-              leading: Icon(Icons.arrow_back_sharp),
-              onTap: () {
-                Navigator.pop(context);
-              },
-            ),
-          ],
-      ));
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -179,11 +107,30 @@ class _MyHomePageState extends State<MyHomePage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
+      floatingActionButton: InkWell(
+          splashColor: Colors.blue,
+          onLongPress: () {
+            // handle your long press functionality here
+            setState(() {
+              _counter = 0;
+            });
+
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: const Text('Reset your counter!'),
+              duration: const Duration(seconds: 3),
+              action: SnackBarAction(
+                label: 'ACTION',
+                onPressed: () { },
+              ),
+            ));
+          },
+          child: FloatingActionButton(
+            child: Icon(Icons.add),
+            //tooltip: 'Increment',
+            onPressed: _incrementCounter,
+          ),
+        )
+      // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
