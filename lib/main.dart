@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:good_deed/widgets/drawer.dart';
+
+var url = 'https://localhost:3000';
 
 void main() {
-  runApp(MyApp());
+  runApp(GoodDeed());
 }
 
-class MyApp extends StatelessWidget {
+class GoodDeed extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Good Deed',
       theme: ThemeData(
         // This is the theme of your application.
         //
@@ -22,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      home: MyHomePage(title: 'Good Deed Home Page'),
     );
   }
 }
@@ -59,6 +62,78 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  Drawer buildExampleDrawer(BuildContext context){
+      return Drawer(
+        child: ListView(
+          // Important: Remove any padding from the ListView.
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Dood'),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Account'),
+              leading: Icon(Icons.account_circle),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Global Deeds'),
+              leading: Icon(Icons.public_rounded),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Privacy Policy'),
+              leading: Icon(Icons.policy),
+              onTap: () {
+                // Update the state of the app
+                // ...
+                // Then close the drawer
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Reset counter'),
+              leading: Icon(Icons.refresh_sharp),
+              onTap: () {
+                setState(() {
+                  _counter = 0;
+                });
+                Navigator.pop(context);
+
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: const Text('Reset your counter!'),
+                  duration: const Duration(seconds: 3),
+                  action: SnackBarAction(
+                    label: 'ACTION',
+                    onPressed: () { },
+                  ),
+                ));
+              },
+            ),
+            ListTile(
+              title: Text('Close'),
+              leading: Icon(Icons.arrow_back_sharp),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+      ));
+  }
+
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -73,6 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
         // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
+      drawer: GDDrawer(),
       body: Center(
         // Center is a layout widget. It takes a single child and positions it
         // in the middle of the parent.
