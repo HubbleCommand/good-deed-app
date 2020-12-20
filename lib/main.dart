@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:good_deed/widgets/deeds.dart';
 import 'package:good_deed/widgets/drawer.dart';
+import 'package:good_deed/routes/Routes.dart';
+import 'package:good_deed/widgets/privacy.dart';
+import 'package:good_deed/widgets/users.dart';
 
 var url = 'https://localhost:3000';
 
 void main() {
   runApp(GoodDeed());
 }
-
+int _counter = 0; //TODO this should be in _MyHomePageState
 class GoodDeed extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -26,11 +30,20 @@ class GoodDeed extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: MyHomePage(title: 'Good Deed Home Page'),
+      routes:  {
+        Routes.deeds: (context) => DeedsPage(),
+        Routes.home: (context) => MyHomePage(title: 'Good Deed Home Page'),
+        Routes.privacy: (context) => PrivacyPage(),
+        Routes.users: (context) => UsersPage(),
+        Routes.account: (context) => AccountPage(),
+      },
     );
   }
 }
 
 class MyHomePage extends StatefulWidget {
+  static const String routeName = "/home";
+  //static String get routeName => _routeName;
   MyHomePage({Key key, this.title}) : super(key: key);
 
   // This widget is the home page of your application. It is stateful, meaning
@@ -49,7 +62,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  //int _counter = counter;
 
   void _incrementCounter() {
     setState(() {

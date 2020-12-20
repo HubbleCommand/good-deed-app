@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:good_deed/routes/Routes.dart';
 
 class GDDrawer extends StatelessWidget {
   @override
@@ -28,13 +29,23 @@ class GDDrawer extends StatelessWidget {
             ])
           ),
           ListTile(
+            title: Text('Home'),
+            leading: Icon(Icons.home),
+            onTap: () {
+              // Update the state of the app
+              // ...
+              Navigator.pushReplacementNamed(context, Routes.home);
+            },
+          ),
+          ListTile(
             title: Text('Account'),
             leading: Icon(Icons.account_circle),
             onTap: () {
               // Update the state of the app
               // ...
               // Then close the drawer
-              Navigator.pop(context);
+              //Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, Routes.account);
             },
           ),
           ListTile(
@@ -43,17 +54,24 @@ class GDDrawer extends StatelessWidget {
             onTap: () {
               // Update the state of the app
               // ...
+
+              Navigator.pushReplacementNamed(context, Routes.deeds);
+
               // Then close the drawer
-              Navigator.pop(context);
+              //Navigator.pop(context);
             },
           ),
           ListTile(
             title: Text('Privacy Policy'),
             leading: Icon(Icons.policy),
             onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
+              Navigator.pushReplacementNamed(context, Routes.privacy);
+            },
+          ),
+          ListTile(
+            title: Text('Settings'),
+            leading: Icon(Icons.settings),
+            onTap: () {
               Navigator.pop(context);
             },
           ),
