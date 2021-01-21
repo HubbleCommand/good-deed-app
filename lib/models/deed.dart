@@ -1,38 +1,29 @@
-import 'package:flutter/cupertino.dart';
 import 'package:good_deed/models/user.dart';
-import 'geo.dart';
+import 'package:geotools/geotools.dart';
 
 class Deed {
   final int deedId;
-  /*
-  final User deederId;
-  final User deededId;
-  */
-  final int deederId;
-  final int deededId;
-  final Point location;
+  final User deeder;
+  final User deeded;
+  final LatLong location;
   final int time;
   final String title;
   final String description;
-  final NetworkImage picture;  //Or just use string?
+  final String picture;  //Or just use string?
 
-  Deed({ this.deedId, this.deederId, this.deededId, this.location, this.time, this.title, this.description, String pictureSrc }): picture = new NetworkImage(pictureSrc);
+  //Deed({ this.deedId, this.deederId, this.deededId, this.location, this.time, this.title, this.description, String pictureSrc }): picture = new NetworkImage(pictureSrc);
+  Deed({ this.deedId, this.deeder, this.deeded, this.location, this.time, this.title, this.description, this.picture });
 
   factory Deed.fromJson(Map<String, dynamic> json) {
     return Deed(
       deedId        : json['deedId'],
-      deederId      : json['deederId'],
-      deededId      : json['deededId'],
-
-      /*
-      deederId      : User.fromJson(json)   json['deederId'],
-      deededId      : json['deededId'],
-       */
-      location      : json['location'],
+      deeder        : User.fromJson(json['deeder']),
+      deeded        : User.fromJson(json['deeded']),
+      location      : LatLong.fromDecimal(json['location_x'] as double, json['location_y'] as double),
       time          : json['time'],
       title         : json['title'],
       description   : json['description'],
-      pictureSrc    : json['avatar']
+      picture       : json['picture']
     );
   }
 }
