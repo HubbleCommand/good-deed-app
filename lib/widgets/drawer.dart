@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 import 'package:good_deed/routes/Routes.dart';
+import 'package:cupertino_icons/cupertino_icons.dart';
 
 class GDDrawer extends StatelessWidget {
   @override
@@ -22,10 +23,12 @@ class GDDrawer extends StatelessWidget {
                   bottom: 12.0,
                   left: 16.0,
                   child: Text("Good Deed",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.w500))),
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                        fontWeight: FontWeight.w500
+                    )
+                  )),
             ])
           ),
           ListTile(
@@ -38,18 +41,7 @@ class GDDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Account'),
-            leading: Icon(Icons.account_circle),
-            onTap: () {
-              // Update the state of the app
-              // ...
-              // Then close the drawer
-              //Navigator.pop(context);
-              Navigator.pushReplacementNamed(context, Routes.account);
-            },
-          ),
-          ListTile(
-            title: Text('Global Deeds'),
+            title: Text('Deeds'),
             leading: Icon(Icons.public_rounded),
             onTap: () {
               // Update the state of the app
@@ -62,10 +54,19 @@ class GDDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Privacy Policy'),
-            leading: Icon(Icons.policy),
+            title: Text('Users'),
+            //leading: Icon(CupertinoIcons.person_2_square_stack),
+            leading: Icon(CupertinoIcons.person_3),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.privacy);
+              Navigator.pushReplacementNamed(context, Routes.users);
+            },
+          ),
+          ListTile(
+            title: Text('Account'),
+//            leading: Icon(Icons.account_circle),
+            leading: Icon(CupertinoIcons.person),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, Routes.account);
             },
           ),
           ListTile(
