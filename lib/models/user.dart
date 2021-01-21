@@ -5,6 +5,7 @@ class User { // / or Deedee
   final String name;
   final String contact;
   final Point home;
+  //final NetworkImage avatar;  //Or just use string?
 
   User({this.userId, this.name, this.contact, this.home});
 
