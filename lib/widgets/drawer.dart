@@ -35,8 +35,6 @@ class GDDrawer extends StatelessWidget {
             title: Text('Home'),
             leading: Icon(Icons.home),
             onTap: () {
-              // Update the state of the app
-              // ...
               Navigator.pushReplacementNamed(context, Routes.home);
             },
           ),
@@ -45,7 +43,6 @@ class GDDrawer extends StatelessWidget {
             leading: Icon(Icons.public_rounded),
             onTap: () {
               // Update the state of the app
-              // ...
 
               Navigator.pushReplacementNamed(context, Routes.deeds);
 
@@ -55,7 +52,6 @@ class GDDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Users'),
-            //leading: Icon(CupertinoIcons.person_2_square_stack),
             leading: Icon(CupertinoIcons.person_3),
             onTap: () {
               Navigator.pushReplacementNamed(context, Routes.users);
@@ -63,7 +59,6 @@ class GDDrawer extends StatelessWidget {
           ),
           ListTile(
             title: Text('Account'),
-//            leading: Icon(Icons.account_circle),
             leading: Icon(CupertinoIcons.person),
             onTap: () {
               Navigator.pushReplacementNamed(context, Routes.account);
