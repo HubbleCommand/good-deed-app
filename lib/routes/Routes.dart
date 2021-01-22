@@ -3,6 +3,7 @@ import 'package:good_deed/widgets/deeds.dart' as D;
 import 'package:good_deed/widgets/privacy.dart';
 import 'package:good_deed/widgets/users.dart';
 import 'package:good_deed/widgets/home.dart';
+import 'package:good_deed/widgets/posts.dart';
 
 class Routes {
   static const String deeds = D.DeedsPage.routeName;
@@ -10,6 +11,7 @@ class Routes {
   static const String privacy = PrivacyPage.routeName;
   static const String users = UsersPage.routeName;
   static const String account = AccountPage.routeName;
+  static const String posts = PostsPage.routeName;
   //static const String notes = NotesPage.routeName;
 
   /*var routes = {
@@ -25,6 +27,7 @@ class Routes {
     MyHomePage.routeName: (context) => MyHomePage(title: 'Good Deed Home Page'),
     D.DeedsPage.routeName: (context) => D.DeedsPage(),
     UsersPage.routeName: (context) => UsersPage(),
-    //AccountPage.routeName: (context) => AccountPage(),
+    AccountPage.routeName: (context) => AccountPage(),
+    PostsPage.routeName: (context) => PostsPage(),
   };
 }
