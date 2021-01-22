@@ -1,15 +1,12 @@
 import 'dart:math';
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 import 'drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:good_deed/models/geo.dart';
-
 import 'package:good_deed/widgets/deed.dart';
-
 import 'package:geotools/geotools.dart';
+import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 class DeedsPage extends StatelessWidget {
   static const String routeName = '/deeds';
@@ -31,60 +28,15 @@ class Deeds extends StatefulWidget {
 }
 
 class _DeedsState extends State<Deeds> {
-  //final _deeds = <String>[];
   final _deeds = <Deed>[];
   //final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
-
   String title;
   String description;
 
-  Dialog _buildDeedDialog(){
-    return Dialog(
-        insetPadding: EdgeInsets.all(10),
-        child: Stack(
-            clipBehavior:Clip.none,
-            children: <Widget>[
-              Container(
-                width: double.infinity,
-                height: 200,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(15),
-                    color: Colors.lightBlue
-                ),
-                padding: EdgeInsets.fromLTRB(20, 50, 20, 20),
-                child: Text("You can make cool stuff!",
-                    style: TextStyle(fontSize: 24),
-                    textAlign: TextAlign.center
-                ),
-              ),
-              Column(
-                children: [
-                  Text(
-                    'This is a deed title',
-                  ),
-                ],
-              ),
-              SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Image.network('https://picsum.photos/250?image=9')
-
-                  ],
-
-                )
-              )
-            ]
-        )
-    );
-  }
-
   Widget _buildRow(Deed deed) {
     //final alreadySaved = _saved.contains(pair);
-
-    LatLong eiffelTower = LatLong.fromDecimal(48.85805556, 2.29416667);
-    LatLong statueOfLiberty = LatLong.fromDecimal(40.68972222, 72.04444444);
+    LatLong statueOfLiberty = LatLong.fromDecimal(40.68972222, 72.04444444);  //Mocked User Location
 
     return ListTile(
       //dense:true, //Makes stuff closer together & text smaller
@@ -100,7 +52,7 @@ class _DeedsState extends State<Deeds> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              (GeoUtils.distanceInMeters(eiffelTower, statueOfLiberty) / 1000).roundToDouble().toString() + ' km',
+              (GeoUtils.distanceInMeters(statueOfLiberty, deed.location) / 1000).roundToDouble().toString() + ' km',
               textAlign: TextAlign.center,
             ),
           ],
@@ -117,58 +69,104 @@ class _DeedsState extends State<Deeds> {
       ),
       //Trailing User Avatar images
       trailing: Container(
-        //padding: const EdgeInsets.all(8.0),
-        //height: 500.0,
-        //width: 500.0,
-        // alignment: FractionalOffset.center,
         child: new Stack(
-          //alignment:new Alignment(x, y)
           clipBehavior:Clip.none,
           children: <Widget>[
-            new Icon(Icons.monetization_on, size: 36.0, color: const Color.fromRGBO(218, 165, 32, 1.0)),
+            ImageUtils.Image.buildIcon(deed.deeder.avatar, 36.0, 36.0),
             new Positioned(
               left: 20.0,
-              child: new Icon(Icons.monetization_on, size: 36.0, color: const Color.fromRGBO(218, 165, 32, 1.0)),
+              child:ImageUtils.Image.buildIcon(deed.deeded.avatar, 36.0, 36.0),
             ),
           ],
         ),
       ),
       onTap: () {
-        /*showDialog(
-          context: context,
-          builder: (BuildContext context){
-            return _buildDeedDialog();
-          }
-        );*/
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: deed)));
       },
     );
   }
-
+  var _count = 0;
   Widget _buildDeeds() {
+    //https://flutter.dev/docs/cookbook/lists/long-lists
+    //So, based on these:
+    //  -https://googleflutter.com/flutter-add-item-to-listview-dynamically/
+    //  -https://stackoverflow.com/questions/51343567/append-items-dynamically-to-listview
+    //Setting state to update _deeds will add items, so pretty easy?
+    //Just need to add controller, so that can see when close to bottom to retrieve like 10 more deeds
     return ListView.builder(
         padding: EdgeInsets.all(16.0),
+        itemCount: _deeds.length,
         itemBuilder: (context, i) {
-          for (var i = 0; i < 10; i++) {
-            _deeds.add(new Deed(
-                deedId         : i.hashCode,
-                deederId       : 1,
-                deededId       : 1,
-                location       : new Point(x:1,y:1,format:'w'),
-                time           : 1,
-                title: "Bog" + i.toString(),
-                description: "Bog description " + i.toString(),
-                pictureSrc  : 'https://i.imgur.com/BoN9kdC.png'
-            ));
-          }
-
           return _buildRow(_deeds[i]);
+
+          //ABOVE is better, as below will not work with getting data from server + building Deed widgets with it
+          /*for (var i = 0; i < 10; i++) {
+            _deeds.add(
+              new Deed(
+                deedId          : i.hashCode,
+                deeder          : new User(
+                  userId  : 1,
+                  name    : 'Bob',
+                  contact : 'bob@gmail.com',
+                  home    : LatLong.fromDecimal(48.85805556, 2.29416667),
+                  avatar: 'https://image.shutterstock.com/image-vector/user-icon-man-business-suit-600w-1700749465.jpg',
+                ),
+                deeded          : new User(
+                  userId  : 2,
+                  name    : 'Alice',
+                  contact : 'alice@gmail.com',
+                  home    : LatLong.fromDecimal(48.85805556, 2.29416667),
+                  avatar: 'https://image.shutterstock.com/image-vector/business-woman-icon-avatar-symbol-600w-790518412.jpg',
+                ),
+                location        : new LatLong.fromDecimal(48.85805556, 2.29416667),
+                time            : 1,
+                title           : "Deed " + i.toString(),
+                description     : "Deed description " + i.toString(),
+                picture         : 'https://i.imgur.com/BoN9kdC.png'
+              )
+            );
+          }
+          _count ++;
+          if(_count < 20){
+            return _buildRow(_deeds[i]);
+          } else {
+            return null;
+          }*/
         }
       );
   }
 
   @override
   Widget build(BuildContext context) {
+    //Build sample deeds
+    //TODO use http or dio to get deeds, with filters
+    for (var i = 0; i < 10; i++) {
+      _deeds.add(
+          new Deed(
+              deedId          : i.hashCode,
+              deeder          : new User(
+                userId  : 1,
+                name    : 'Bob',
+                contact : 'bob@gmail.com',
+                home    : LatLong.fromDecimal(48.85805556, 2.29416667),
+                avatar: 'https://image.shutterstock.com/image-vector/user-icon-man-business-suit-600w-1700749465.jpg',
+              ),
+              deeded          : new User(
+                userId  : 2,
+                name    : 'Alice',
+                contact : 'alice@gmail.com',
+                home    : LatLong.fromDecimal(48.85805556, 2.29416667),
+                avatar: 'https://image.shutterstock.com/image-vector/business-woman-icon-avatar-symbol-600w-790518412.jpg',
+              ),
+              location        : new LatLong.fromDecimal(48.85805556, 2.29416667),
+              time            : 1,
+              title           : "Deed " + i.toString(),
+              description     : "Deed description " + i.toString(),
+              picture         : 'https://i.imgur.com/BoN9kdC.png'
+          )
+      );
+    }
+
     final _formKey = GlobalKey<FormState>();
     return Scaffold(
       body: Column(
@@ -188,122 +186,123 @@ class _DeedsState extends State<Deeds> {
           ),
         ],
       ),
-        floatingActionButton: InkWell(
-          splashColor: Colors.blue,
-          child: FloatingActionButton(
-            child: Icon(Icons.add),
-            tooltip: 'Create new deed',
-            onPressed: (){
-              //Move this into the InkWell? However doesnt seem to do anything when in InkWell tho
-              showDialog(
-                context: context,
-                builder: (BuildContext context){
-                  return Dialog(  //Using Dialog instead of AlertDialog for formatting (https://stackoverflow.com/questions/53913192/flutter-change-the-width-of-an-alertdialog)
-                    insetPadding: EdgeInsets.all(10),
-                    child: Stack(
-                      //overflow: Overflow.visible, //This is deprecated, use clipBehavior as done below
-                      clipBehavior:Clip.none,
-                      children: <Widget>[
-                        Text(
-                          'Create new Deed',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
+      floatingActionButton: InkWell(
+        splashColor: Colors.blue,
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          tooltip: 'Create new deed',
+          onPressed: (){
+            //Move this into the InkWell? However doesnt seem to do anything when in InkWell tho
+            showDialog(
+              context: context,
+              builder: (BuildContext context){
+                return Dialog(  //Using Dialog instead of AlertDialog for formatting (https://stackoverflow.com/questions/53913192/flutter-change-the-width-of-an-alertdialog)
+                  insetPadding: EdgeInsets.all(10),
+                  child: Stack(
+                    //overflow: Overflow.visible, //This is deprecated, use clipBehavior as done below
+                    clipBehavior:Clip.none,
+                    children: <Widget>[
+                      Text(
+                        'Create new Deed',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
+                      Positioned(
+                        right: -10.0,
+                        top: -15.0,
+                        child: InkResponse(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: CircleAvatar(
+                            child: Icon(Icons.close),
+                            backgroundColor: Colors.red,
                           ),
                         ),
-                        Positioned(
-                          right: -10.0,
-                          top: -15.0,
-                          child: InkResponse(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: CircleAvatar(
-                              child: Icon(Icons.close),
-                              backgroundColor: Colors.red,
+                      ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: <Widget>[
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.title),
+                                    labelText: 'Title'
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                                onFieldSubmitted: (String value){title=value;},
+                              ),
                             ),
-                          ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                keyboardType: TextInputType.multiline,
+                                maxLines: null,
+                                decoration: InputDecoration(
+                                  //prefixIcon: Icon(Icons.image),
+                                  //prefixIcon: Icon(Icons.description),
+                                  prefixIcon: Icon(Icons.subtitles),
+                                  labelText: 'Description'
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please enter some text';
+                                  }
+                                  return null;
+                                },
+                                onFieldSubmitted: (String value){description=value;},
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                    prefixIcon: Icon(Icons.person),
+                                    labelText: 'User'
+                                ),
+                                validator: (value) {
+                                  if (value.isEmpty) {
+                                    return 'Please choose a user!';
+                                  }
+                                  return null;
+                                },
+                                onFieldSubmitted: (String value){description=value;},
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: RaisedButton(
+                                child: Text("Submit"),
+                                onPressed: () {
+                                  if (_formKey.currentState.validate()) {
+                                    _formKey.currentState.save();
+                                    _formKey.currentState;
+                                  }
+                                },
+                              ),
+                            )
+                          ],
                         ),
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.title),
-                                      labelText: 'Title'
-                                  ),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please enter some text';
-                                    }
-                                    return null;
-                                  },
-                                  onFieldSubmitted: (String value){title=value;},
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  keyboardType: TextInputType.multiline,
-                                  maxLines: null,
-                                  decoration: InputDecoration(
-                                    //prefixIcon: Icon(Icons.image),
-                                    //prefixIcon: Icon(Icons.description),
-                                    prefixIcon: Icon(Icons.subtitles),
-                                    labelText: 'Description'
-                                  ),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please enter some text';
-                                    }
-                                    return null;
-                                  },
-                                  onFieldSubmitted: (String value){description=value;},
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  decoration: InputDecoration(
-                                      prefixIcon: Icon(Icons.person),
-                                      labelText: 'User'
-                                  ),
-                                  validator: (value) {
-                                    if (value.isEmpty) {
-                                      return 'Please choose a user!';
-                                    }
-                                    return null;
-                                  },
-                                  onFieldSubmitted: (String value){description=value;},
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: RaisedButton(
-                                  child: Text("Submit"),
-                                  onPressed: () {
-                                    if (_formKey.currentState.validate()) {
-                                      _formKey.currentState.save();
-                                      _formKey.currentState;
-                                    }
-                                  },
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ));
-                  }
-              );
-            },
-          ),
-        )
+                      ),
+                    ],
+                  )
+                );
+              }
+            );
+          },
+        ),
+      )
     );
   }
 }
@@ -353,8 +352,7 @@ class MyCustomFormState extends State<NewDeedPage> {
               onPressed: () {
                 print("BOO");
                 // Validate returns true if the form is valid, or false otherwise.
-                if (_formKey.currentState.validate()) {
-                  // If the form is valid, display a Snackbar.
+                if (_formKey.currentState.validate()) { // If the form is valid
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: const Text('Processing Data'),
                     duration: const Duration(seconds: 3),
@@ -366,7 +364,6 @@ class MyCustomFormState extends State<NewDeedPage> {
 
                   //Can now post data
                 }
-
               },
               child: Text('Submit'),
             ),
