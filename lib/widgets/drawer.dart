@@ -51,6 +51,11 @@ class GDDrawer extends StatelessWidget {
             },
           ),
           ListTile(
+            title: Text('Posts'),
+            leading: Icon(Icons.public_rounded),
+            onTap: () {Navigator.pushReplacementNamed(context, Routes.posts);},
+          ),
+          ListTile(
             title: Text('Users'),
             leading: Icon(CupertinoIcons.person_3),
             onTap: () {
