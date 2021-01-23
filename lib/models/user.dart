@@ -11,11 +11,11 @@ class User { // / or Deedee
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      userId  : json['userId'],
-      name    : json['name'],
-      contact : json['contact'],
-      home    : json['home'],
-      avatar: json['avatar'],
+      userId  : json['userId'] as int,
+      name    : json['name'] as String,
+      contact : json['contact'] as String,
+      //home    : LatLong.fromJson(json['home']),
+      avatar: json['avatar'] as String,
     );
   }
 }
