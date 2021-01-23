@@ -4,4 +4,10 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+
+    <!--
+        TODO REMOVE, this is ONLY for dev!
+        https://stackoverflow.com/questions/64197752/bad-state-insecure-http-is-not-allowed-by-platform
+    -->
+    <application android:usesCleartextTraffic="true"/>
 </manifest>
