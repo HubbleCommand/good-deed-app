@@ -14,8 +14,8 @@ class User { // / or Deedee
       userId  : json['userId'] as int,
       name    : json['name'] as String,
       contact : json['contact'] as String,
-      //home    : LatLong.fromJson(json['home']),
-      avatar: json['avatar'] as String,
+      home    : json['home'] ? LatLong.fromJson(json['home']) : null,
+      avatar  : json['avatar'] as String,
     );
   }
 }

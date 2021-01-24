@@ -17,21 +17,16 @@ class Deed {
   Deed({ this.deedId, this.deeder, this.deeded, this.location, this.time, this.title, this.description, this.picture });
 
   factory Deed.fromJson(Map<String, dynamic> json) {
-    //JUST NEEDED TO CAST!!!
+    //Check if have minimum to create Deed
     return Deed(
-      deedId        : json['deedId'] as int,
-      deeder        : User.fromJson((json['deeder'])),
-      deeded        : User.fromJson((json['deeded'])),
-      //location      : LatLong.fromDecimal(json['location_x'] as double, json['location_y'] as double),
-      location      : LatLong.fromJson((json['location'])),
+      deedId        : json['deedId'] as int,  //Shouldn't need anything else for null safety
+      deeder        : json['deeder'] ? User.fromJson((json['deeder'])) : null,  //Null safety for class
+      deeded        : json['deeded'] ? User.fromJson((json['deeded'])) : null,
+      location      : json['location'] ? LatLong.fromJson((json['location'])) : null,
       time          : json['time'] as int,
       title         : json['title'] as String,
       description   : json['description'] as String,
       picture       : json['picture'] as String
     );
-  }
-
-  jsonEncode(Deed deed){
-
   }
 }
