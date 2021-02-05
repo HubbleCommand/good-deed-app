@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/widgets/drawer.dart';
 //import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert' as convert;
+import 'package:intl/intl.dart';
 
 int _counter = 0; //TODO this should be in _MyHomePageState
 class MyHomePage extends StatefulWidget {
@@ -25,6 +28,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   //int _counter = counter;
+  //int _deedCount;
 
   void _incrementCounter() {
     setState(() {
@@ -72,9 +76,12 @@ class _MyHomePageState extends State<MyHomePage> {
             // horizontal).
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
+              Icon(Icons.public_sharp, size: 250),
+              Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Divider(),
               ),
+              DeedCountWidget(),
               Text(
                 '$_counter',
                 style: Theme.of(context).textTheme.headline4,
@@ -108,4 +115,61 @@ class _MyHomePageState extends State<MyHomePage> {
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+}
+
+class DeedCountWidget extends StatefulWidget {
+  @override
+  _DeedCountWidgetState createState() => _DeedCountWidgetState();
+}
+
+class _DeedCountWidgetState extends State<DeedCountWidget> {
+  Future<int> _count;
+
+  @override
+  void initState() {
+    super.initState();
+    _count = getDeedCount();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        FutureBuilder<int>(
+          future: _count,
+          builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
+            if (snapshot.hasData) {
+              print('Data: ${snapshot.data}');
+              NumberFormat numberFormat = NumberFormat.decimalPattern();
+              return Column(
+                children: [
+                  Text(
+                    "${numberFormat.format(snapshot.data)}",
+                    style: Theme.of(context).textTheme.headline4,
+                  ),
+                  Text(
+                    "That's how many deeds have been done in the last 24 hours!",
+                  )
+                ],
+              );
+            } else {
+              return Text('...');
+            }
+          },
+        ),
+      ],
+    );
+  }
+}
+
+Future<int> getDeedCount() async {
+  var client = http.Client();
+  DateTime now = new DateTime.now().subtract(new Duration(hours:24));
+  String uri = 'http://192.168.1.33:3000/deeds/count?after=${now.millisecondsSinceEpoch}';
+  var response = await client.get(uri);
+  int deedCount = convert.jsonDecode(response.body)['count'];
+
+  client.close();
+
+  return deedCount; //Without .toString(), 0 can be returned, which is falsey!
 }
