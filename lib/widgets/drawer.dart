@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/routes/Routes.dart';
-import 'package:cupertino_icons/cupertino_icons.dart';
 
 class GDDrawer extends StatelessWidget {
+  _pushRoute(context, route) {
+    Navigator.pop(context); //Or after?
+    Navigator.of(context).pushNamed(route);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -35,7 +39,9 @@ class GDDrawer extends StatelessWidget {
             title: Text('Home'),
             leading: Icon(Icons.home),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.home);
+              //Navigator.pushReplacementNamed(context, Routes.home);
+
+              _pushRoute(context, Routes.home);
             },
           ),
           ListTile(
@@ -70,10 +76,10 @@ class GDDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Settings'),
+            title: Text('Settings & About GD'),
             leading: Icon(Icons.settings),
             onTap: () {
-              Navigator.pop(context);
+              Navigator.pushReplacementNamed(context, Routes.settings);
             },
           ),
         ],
