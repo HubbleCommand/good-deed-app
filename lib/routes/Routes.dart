@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/widgets/deeds.dart' as D;
-import 'package:good_deed/widgets/privacy.dart';
 import 'package:good_deed/widgets/users.dart';
 import 'package:good_deed/widgets/home.dart';
 import 'package:good_deed/widgets/posts.dart';
+import 'package:good_deed/widgets/account.dart';
+import 'package:good_deed/routes/settings.dart';
 
 class Routes {
   static const String deeds = D.DeedsPage.routeName;
   static const String home = MyHomePage.routeName;
-  static const String privacy = PrivacyPage.routeName;
   static const String users = UsersPage.routeName;
   static const String account = AccountPage.routeName;
   static const String posts = PostsPage.routeName;
+  static const String settings = SettingsPage.routeName;
   //static const String notes = NotesPage.routeName;
 
   /*var routes = {
@@ -29,5 +30,6 @@ class Routes {
     UsersPage.routeName: (context) => UsersPage(),
     AccountPage.routeName: (context) => AccountPage(),
     PostsPage.routeName: (context) => PostsPage(),
+    SettingsPage.routeName: (context) => SettingsPage(),
   };
 }
