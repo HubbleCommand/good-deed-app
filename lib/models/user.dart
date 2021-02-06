@@ -10,11 +10,11 @@ class User { // / or Deedee
   User({this.userId, this.name, this.contact, this.home, this.avatar});
 
   factory User.fromJson(Map<String, dynamic> json) {
-    return User(
+    return new  User(
       userId  : json['userId'] as int,
       name    : json['name'] as String,
       contact : json['contact'] as String,
-      home    : json['home'] ? LatLong.fromJson(json['home']) : null,
+      home    : json.containsKey('home') ? LatLong.fromJson(json['home']) : null,
       avatar  : json['avatar'] as String,
     );
   }
