@@ -1,4 +1,7 @@
-# good_deed
+# Flutter Tips & Tricks : Known issues using android studio
+- project files not loading in project explorer -> change from Android to Project view (https://github.com/flutter/flutter-intellij/issues/4806)
+
+# Good Deed Cross-Platform Mobile App
 
 Flutter application to share good deeds. 
 
