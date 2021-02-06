@@ -27,7 +27,7 @@ class DeedsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                child: Deeds2(),
+                child: Deeds(),
               ),
             ]
         ),
@@ -47,19 +47,24 @@ class DeedsPage extends StatelessWidget {
 }
 
 List<Deed> parseDeeds(String responseBody) {
+  print('PARSING...');
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  print('DECODED DEEDS');
 
-  return parsed.map<Deed>((json) => Deed.fromJson(json)).toList();
+  var calced = parsed.map<Deed>((json) => Deed.fromJson(json)).toList();
+  print('DID LAST THING');
+  return calced;
 }
 
 Future<List<Deed>> fetchDeeds(http.Client client) async {
-  final response = await client.get('http://192.168.1.33:3000/deeds/');
-
+  final response = await client.get('http://192.168.1.33:3000/deeds');
+  print('GOT DEEDS');
   return compute(parseDeeds, response.body);
 }
 
-class Deeds2 extends StatelessWidget{
-  Deeds2({Key key}) : super(key: key);
+//TODO make stateful!
+class Deeds extends StatelessWidget{
+  Deeds({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -85,30 +90,107 @@ class DeedsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.builder(
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //return GridView.builder(
+    return ListView.builder(
+      /*gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
-      ),
+      ),*/
       itemCount: deeds.length,
       itemBuilder: (context, index) {
-        return Stack(
+        /*return Column(
           children: [
             Text(deeds[index].title),
-            Image.network(deeds[index].picture),
+            //Image.network(deeds[index].pictures.first),
+
+            //Protects against there being to picture!
+            if(deeds[index].pictures != null && deeds[index].pictures.length > 0 )
+              Image.network(deeds[index].pictures.first),
+            //Image.network(deeds[index].picture),
           ],
-        );
+        );*/
+        /*return ListTile(
+          title: Text(deeds[index].title),
+          subtitle:
+            (deeds[index].pictures != null && deeds[index].pictures.length > 0 ) ? Image.network(deeds[index].pictures.first) : Text(''),
+
+            //Image.network(deeds[index].pictures.first),
+
+            //Protects against there being to picture!
+
+            //Image.network(deeds[index].picture),
+
+        );*/
+        return DeedItem(deeds[index]);
       },
     );
   }
 }
 
+class DeedItem extends StatelessWidget {
+  DeedItem(this._deed);
+  final Deed _deed;
+  final LatLong statueOfLiberty = LatLong.fromDecimal(40.68972222, 72.04444444);  //Mocked User Location
+  final _biggerFont = TextStyle(fontSize: 18.0);
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      //dense:true, //Makes stuff closer together & text smaller
+      //isThreeLine: true, //Gives more space for subtitle (here, description), however can fuck / not fuck with other formatting (i.e. trailing size)
+      //Distance from user
+      leading: Container(
+          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+          decoration: BoxDecoration(
+            color: Colors.grey[200],
+            borderRadius: BorderRadius.circular(15),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                (GeoUtils.distanceInMeters(statueOfLiberty, _deed.location) / 1000).roundToDouble().toString() + ' km',
+                textAlign: TextAlign.center,
+              ),
+            ],
+          )
+      ),
+      //Title
+      title: Text(
+        _deed.title.length > 20 ? _deed.title.substring(0, 19) + '...' : _deed.title,
+        style: _biggerFont,
+      ),
+      //Description
+      subtitle: Text(
+        _deed.description.length > 30 ? _deed.description.substring(0, 29) + '...' : _deed.description,
+      ),
+      //Trailing User Avatar images
+      trailing: Container(
+        child: new Stack(
+          clipBehavior:Clip.none,
+          children: <Widget>[
+            ImageUtils.Image.buildIcon(_deed.deeder.avatar, 36.0, 36.0),
+            new Positioned(
+              left: 20.0,
+              child:ImageUtils.Image.buildIcon(_deed.deeded.avatar, 36.0, 36.0),
+            ),
+          ],
+        ),
+      ),
+      onTap: () {
+        Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed)));
+      },
+    );
+  }
+
+}
+
 //TODO turn to stateless? Maybe not, as setState() is easy way to redraw / add elements to list without rebuilding / re-rendering everything / whole list!
-class Deeds extends StatefulWidget {
+class DeedsOld extends StatefulWidget {
   @override
   _DeedsState createState() => _DeedsState();
 }
 
-class _DeedsState extends State<Deeds> {
+class _DeedsState extends State<DeedsOld> {
   final _deeds = <Deed>[];
   //final _saved = Set<WordPair>();
   final _biggerFont = TextStyle(fontSize: 18.0);
@@ -238,7 +320,7 @@ class _DeedsState extends State<Deeds> {
               title           : "Deed " + i.toString(),
               description     : "Deed description " + i.toString(),
               //picture         : 'https://i.imgur.com/BoN9kdC.png'
-              picture: 'https://picsum.photos/200'
+              pictures: ['https://picsum.photos/200']
           )
       );
     }

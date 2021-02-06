@@ -37,7 +37,8 @@ class DeedPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
           ),
-          ImageUtils.Image.buildIcon(deed.picture, 190.0, 190.0),
+          ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
+          //ImageUtils.Image.buildIcon(deed.picture, 190.0, 190.0),
           _splitter,
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
