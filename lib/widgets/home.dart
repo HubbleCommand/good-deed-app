@@ -182,29 +182,10 @@ Future<int> getDeedCount() async {
   String uri = 'http://192.168.1.33:3000/deeds/count?after=${now.millisecondsSinceEpoch}';
   var response = await client.get(uri);
   var body = convert.jsonDecode(response.body);
-  print(body);
 
   //Ensures that if connection error between NodeJS and Neo4j, that loading spinner doesn't turn infinitely
-  final errorCode = pick(body, 'error', 'code').asStringOrNull();
-  print('Error code: $errorCode');
-  if(pick(body, 'error', 'code').asStringOrNull() == 'ServiceUnavailable'){
-    return -1;
-  }
-
-  //if(body['error']['code'] == 'ServiceUnavailable'){
-  if(body.containsKey('error')){
-    if(body['error'].containsKey('code')){
-      if(body['error']['code'] == 'ServiceUnavailable'){
-        return -1;
-      }
-    }
-  }
-
-  //int deedCount2 = (convert.jsonDecode(response.body)['error']['code'] == 'ServiceUnavailable') ? -1 : convert.jsonDecode(response.body)['count'];
-
-  //Otherwise parse data and close client connection
-  int deedCount = body['count'];
+  int deedCount = (pick(body, 'error', 'code').asStringOrNull() == 'ServiceUnavailable') ? -1 : body['count'];
   client.close();
 
-  return deedCount; //Without .toString(), 0 can be returned, which is falsey! But can change to Future<int> instead of string!
+  return deedCount;
 }
