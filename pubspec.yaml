@@ -44,6 +44,9 @@ dependencies:
   # For the about page (app version etc.)
   package_info: ^0.4.3+4
 
+  # For checking key existance in nested objects
+  deep_pick: ^0.5.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
