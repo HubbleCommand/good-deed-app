@@ -4,6 +4,7 @@ import 'package:good_deed/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart';
+import 'package:deep_pick/deep_pick.dart';
 
 int _counter = 0; //TODO this should be in _MyHomePageState
 class MyHomePage extends StatefulWidget {
@@ -128,7 +129,12 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
   @override
   void initState() {
     super.initState();
-    _count = getDeedCount();
+    _count = getDeedCount().timeout(
+      Duration(seconds:10),
+      onTimeout: (){
+        return -1;
+      }
+    );
   }
 
   @override
@@ -139,6 +145,15 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
           future: _count,
           builder: (BuildContext context, AsyncSnapshot<int> snapshot) {
             if (snapshot.hasData) {
+              print(snapshot.data);
+              if(snapshot.data < 0){
+                return Column(
+                  children: [
+                    Text( "Can't connect ot find daily deeds...")
+                  ],
+                );
+              }
+
               print('Data: ${snapshot.data}');
               NumberFormat numberFormat = NumberFormat.decimalPattern();
               return Column(
@@ -147,13 +162,12 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
                     "${numberFormat.format(snapshot.data)}",
                     style: Theme.of(context).textTheme.headline4,
                   ),
-                  Text(
-                    "That's how many deeds have been done in the last 24 hours!",
-                  )
+                  Text("That's how many deeds have been done in the last 24 hours!",)
                 ],
               );
             } else {
-              return Text('...');
+              print(snapshot);
+              return CircularProgressIndicator();
             }
           },
         ),
@@ -167,9 +181,30 @@ Future<int> getDeedCount() async {
   DateTime now = new DateTime.now().subtract(new Duration(hours:24));
   String uri = 'http://192.168.1.33:3000/deeds/count?after=${now.millisecondsSinceEpoch}';
   var response = await client.get(uri);
-  int deedCount = convert.jsonDecode(response.body)['count'];
+  var body = convert.jsonDecode(response.body);
+  print(body);
 
+  //Ensures that if connection error between NodeJS and Neo4j, that loading spinner doesn't turn infinitely
+  final errorCode = pick(body, 'error', 'code').asStringOrNull();
+  print('Error code: $errorCode');
+  if(pick(body, 'error', 'code').asStringOrNull() == 'ServiceUnavailable'){
+    return -1;
+  }
+
+  //if(body['error']['code'] == 'ServiceUnavailable'){
+  if(body.containsKey('error')){
+    if(body['error'].containsKey('code')){
+      if(body['error']['code'] == 'ServiceUnavailable'){
+        return -1;
+      }
+    }
+  }
+
+  //int deedCount2 = (convert.jsonDecode(response.body)['error']['code'] == 'ServiceUnavailable') ? -1 : convert.jsonDecode(response.body)['count'];
+
+  //Otherwise parse data and close client connection
+  int deedCount = body['count'];
   client.close();
 
-  return deedCount; //Without .toString(), 0 can be returned, which is falsey!
+  return deedCount; //Without .toString(), 0 can be returned, which is falsey! But can change to Future<int> instead of string!
 }
