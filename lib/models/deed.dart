@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:good_deed/models/user.dart';
 import 'package:geotools/geotools.dart';
 
@@ -13,7 +11,6 @@ class Deed {
   final String description;
   final List<String> pictures;  //Or just use string?
 
-  //Deed({ this.deedId, this.deederId, this.deededId, this.location, this.time, this.title, this.description, String pictureSrc }): picture = new NetworkImage(pictureSrc);
   Deed({ this.deedId, this.deeder, this.deeded, this.location, this.time, this.title, this.description, this.pictures });
 
   factory Deed.fromJson(Map<String, dynamic> json) {
