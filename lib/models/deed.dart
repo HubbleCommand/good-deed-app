@@ -20,19 +20,13 @@ class Deed {
     //Check if have minimum to create Deed
     return new Deed(
       deedId        : json['deedId'] as int,  //Shouldn't need anything else for null safety
-      /*deeder        : json['deeder'] ? User.fromJson((json['deeder'])) : null,  //Null safety for class
-      deeded        : json['deeded'] ? User.fromJson((json['deeded'])) : null,
-      location      : json['location'] ? LatLong.fromJson((json['location'])) : null,*/
       deeder        : json.containsKey('deeder') ? User.fromJson((json['deeder'])) : null,
       deeded        : json.containsKey('deeded') ? User.fromJson((json['deeded'])) : null,
-      //location      : LatLong.fromDecimal(json['location_x'] as double, json['location_y'] as double),
       location      : json.containsKey('location') ? LatLong.fromJson((json['location'])) : null,
       time          : json['time'] as int,
       title         : json['title'] as String,
       description   : json['description'] as String,
-      //pictures      : json['pictures'] ? List.from(json['pictures']) as List<String> : null,
       pictures      : json.containsKey('pictures') == true ? List.from(json['pictures']) : null,
-      //picture      : json['picture'] as String,
     );
   }
 }

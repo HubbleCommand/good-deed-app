@@ -18,11 +18,11 @@ class Post {
     return Post(
       postId    : json['postId'] as int,
       time      : json['time'] as int,
-      user      : json['deeded'] ? User.fromJson((json['deeded'])) : null,
-      location  : json['location'] ? LatLong.fromJson((json['location'])) : null,
+      user      : json.containsKey('user') ?  User.fromJson(json['user']) : null,
+      location  : json.containsKey('location') ? LatLong.fromJson(json['location']) : null,
       title     : json['title'] as String,
       content   : json['content'] as String,
-      pictures  : jsonDecode(json['time']) as List<String>,
+      pictures  : List.from(json['pictures']) as List<String>,
     );
   }
 }
