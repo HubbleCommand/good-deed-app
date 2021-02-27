@@ -27,7 +27,8 @@ class DeedsPage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                child: Deeds(),
+                //child: Deeds(),
+                child: DeedsList2(),
               ),
             ]
         ),
@@ -46,6 +47,7 @@ class DeedsPage extends StatelessWidget {
   }
 }
 
+//TODO look at this: https://medium.com/@sharmadhiraj.np/infinite-scrolling-listview-on-flutter-88d7a5e2bb4
 List<Deed> parseDeeds(String responseBody) {
   print('PARSING...');
   final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
@@ -56,8 +58,8 @@ List<Deed> parseDeeds(String responseBody) {
   return calced;
 }
 
-Future<List<Deed>> fetchDeeds(http.Client client) async {
-  final response = await client.get('http://192.168.1.33:3000/deeds');
+Future<List<Deed>> fetchDeeds() async {
+  final response = await http.Client().get('http://192.168.1.33:3000/deeds');
   print('GOT DEEDS');
   return compute(parseDeeds, response.body);
 }
@@ -68,18 +70,170 @@ class Deeds extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    /*return Scaffold(
       body: FutureBuilder<List<Deed>>(
         future: fetchDeeds(http.Client()),
         builder: (context, snapshot) {
           if (snapshot.hasError) print(snapshot.error);
 
           return snapshot.hasData
-              ? DeedsList(deeds: snapshot.data)
+              ? DeedsList2(deeds: snapshot.data)
               : Center(child: CircularProgressIndicator());
         },
       ),
+    );*/
+    return Scaffold(
+      body: DeedsList2()
     );
+  }
+}
+
+class DeedsList2 extends StatefulWidget {
+  DeedsList2({Key key}) : super(key: key);
+
+  @override
+  DeedsList2State createState() => DeedsList2State();
+}
+
+class DeedsList2State extends State<DeedsList2> {
+  bool _hasMore;
+  int _pageNumber;
+  bool _error;
+  bool _loading;
+  final int _defaultPhotosPerPageCount = 10;
+  final int _nextPageThreshold = 5;
+  List<Deed> futureDeeds2;
+  int timesFoundZeroDeeds = 0;
+  int timesFoundZeroDeedsThreshold = 5;
+
+  int _timeRequest;
+
+  @override
+  void initState() {
+    super.initState();
+    _hasMore = true;
+    _pageNumber = 0;
+    _error = false;
+    _loading = true;
+    futureDeeds2 = [];
+
+    _timeRequest = DateTime.now().millisecondsSinceEpoch;
+
+    fetchDeeds(10, _timeRequest);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getBody();
+  }
+
+  Widget getBody() {
+    if (futureDeeds2.isEmpty) {
+      if (_loading) {
+        return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ));
+      } else if (_error) {
+        return Center(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _loading = true;
+                  _error = false;
+                  fetchDeeds(10, _timeRequest);
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text("Error while loading photos, tap to try agin"),
+              ),
+            ));
+      }
+    } else {
+      return ListView.builder(
+          itemCount: futureDeeds2.length + (_hasMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            //if (index == futureDeeds2.length - _nextPageThreshold) {
+            if (index == futureDeeds2.length - _nextPageThreshold && timesFoundZeroDeeds < timesFoundZeroDeedsThreshold) {
+              fetchDeeds(10, _timeRequest);
+            }
+            if(timesFoundZeroDeeds >= timesFoundZeroDeedsThreshold){
+              //TODO make an end item to show that at end of list : https://flutter.dev/docs/cookbook/lists/mixed-list
+              //return new EndItem(index);
+              //return new Text(index.toString() + ' End');
+            }
+            if (index == futureDeeds2.length) {
+              if (_error) {
+                return Center(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _loading = true;
+                          _error = false;
+                          fetchDeeds(10, _timeRequest);
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text("Error while loading photos, tap to try agin"),
+                      ),
+                    ));
+              } else {
+                return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: CircularProgressIndicator(),
+                    ));
+              }
+            }
+            //final Deed deedLoc = futureDeeds2[index];
+            return DeedItem(futureDeeds2[index]);
+          });
+    }
+    return Container();
+  }
+
+  Future<void> fetchDeeds(int limit, int before) async {
+    try {
+      int skip = (_pageNumber) * 10; //TODO needs to use the actual number of deeds!
+      skip = futureDeeds2.length;
+      //String url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before&start=$skip';
+      //String url = 'http://192.168.1.33:3000/deeds';
+      String url = '';
+      if(skip == 0){
+        url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before';
+      } else {
+        url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before&start=$skip';
+      }
+
+      print(url);
+      final response = await http.Client().get(url);
+      print('GOT DEEDS');
+      //return compute(parseDeeds, response.body);
+      List<Deed> parsedDeeds = parseDeeds(response.body);
+      print('Number of deeds found: ' + parsedDeeds.length.toString());
+
+      if(parsedDeeds.length == 0){
+        timesFoundZeroDeeds += 1;
+      } else {
+        timesFoundZeroDeeds = 0;
+      }
+
+      setState(() {
+        //_hasMore = parsedDeeds.length == _defaultPhotosPerPageCount; //THIS NEEDS TO BE CHANGED!!! It can keep requesting Deeds infinitely if there aren't enough!
+        _hasMore = false;
+        _loading = false;
+        _pageNumber = _pageNumber + 1;
+        futureDeeds2.addAll(parsedDeeds);
+      });
+    } catch (e) {
+      setState(() {
+        _loading = false;
+        _error = true;
+      });
+    }
   }
 }
 
@@ -90,38 +244,22 @@ class DeedsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //return GridView.builder(
     return ListView.builder(
-      /*gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),*/
       itemCount: deeds.length,
       itemBuilder: (context, index) {
-        /*return Column(
-          children: [
-            Text(deeds[index].title),
-            //Image.network(deeds[index].pictures.first),
-
-            //Protects against there being to picture!
-            if(deeds[index].pictures != null && deeds[index].pictures.length > 0 )
-              Image.network(deeds[index].pictures.first),
-            //Image.network(deeds[index].picture),
-          ],
-        );*/
-        /*return ListTile(
-          title: Text(deeds[index].title),
-          subtitle:
-            (deeds[index].pictures != null && deeds[index].pictures.length > 0 ) ? Image.network(deeds[index].pictures.first) : Text(''),
-
-            //Image.network(deeds[index].pictures.first),
-
-            //Protects against there being to picture!
-
-            //Image.network(deeds[index].picture),
-
-        );*/
         return DeedItem(deeds[index]);
       },
+    );
+  }
+}
+
+class EndItem extends StatelessWidget {
+  EndItem(this._index);
+  final int _index;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(_index.toString() + ' End'),
     );
   }
 }
