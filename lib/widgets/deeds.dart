@@ -70,6 +70,13 @@ class DeedsListState extends State<DeedsList> {
 
   final _filterFormKey = GlobalKey<FormState>();
 
+  //Filter param variables
+  String _titleFilter;
+  String _deederFilter;
+  String _deededFilter;
+  int _distanceFilter;
+  LatLong _positionFilter;
+
   @override
   void initState() {
     super.initState();
@@ -147,7 +154,11 @@ class DeedsListState extends State<DeedsList> {
                     }
                     return null;
                   },
-                  onFieldSubmitted: (String value){/*title=value;*/},
+                  onFieldSubmitted: (String value){
+                    setState(() {
+                      _titleFilter = value;
+                    });
+                  },
                 ),
               ),
             ]
