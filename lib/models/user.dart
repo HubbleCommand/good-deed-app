@@ -1,3 +1,4 @@
+import 'package:good_deed/utils/geo.dart';
 import 'package:latlong/latlong.dart';
 
 class User { // / or Deedee
@@ -15,12 +16,16 @@ class User { // / or Deedee
   }
 
   factory User.fromJson(Map<String, dynamic> json) {
+    double lat = GeoUtils.sanitizeCoord(json['home']['lat']);
+    double long = GeoUtils.sanitizeCoord(json['home']['long']);
+
     return new  User(
       userId  : json['userId'] as String,
       name    : json['name'] as String,
       contact : json['contact'] as String,
       //home    : json.containsKey('home') ? LatLong.fromJson(json['home']) : null,
-      home    : json.containsKey('home') ? LatLng(json['home']['lat'], json['home']['long']) : null,
+      //home    : json.containsKey('home') ? LatLng(json['home']['lat'], json['home']['long']) : null,
+      home    : json.containsKey('home') ? LatLng(lat, long) : null,
       avatar  : json['avatar'] as String,
     );
   }
