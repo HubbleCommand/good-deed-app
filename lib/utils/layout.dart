@@ -17,4 +17,13 @@ class LayoutUtils {
       child: Divider(),
     );
   }
+
+  static Widget listEndItemBuilder({@required String message}){
+    return Padding(
+      padding: EdgeInsets.all(16.0),
+      child: Center(
+        child: Text(message),
+      ),
+    );
+  }
 }
