@@ -1,18 +1,26 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:good_deed/forms/filters/deed.dart';
+import 'package:good_deed/globals.dart';
+import 'package:good_deed/models/filters/deed.dart';
+import 'package:good_deed/utils/geo.dart';
+import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
+import 'package:latlong/latlong.dart';
+import 'adds.dart';
 import 'drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:good_deed/widgets/deed.dart';
-import 'package:geotools/geotools.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 import 'package:good_deed/forms/deed.dart';
 
 class DeedsPage extends StatelessWidget {
   static const String routeName = '/deeds';
+  final FilterDeed filterDeed;
+
+  DeedsPage({this.filterDeed});
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +29,13 @@ class DeedsPage extends StatelessWidget {
           title: Text("Deeds"),
         ),
         drawer: GDDrawer(),
-        //body: Deeds());
         body: Scaffold(
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
                 //child: Deeds(),
-                child: DeedsList(),
+                child: DeedsList(filter: filterDeed,),
               ),
             ]
         ),
@@ -49,10 +56,11 @@ class DeedsPage extends StatelessWidget {
 
 //TODO look at this: https://medium.com/@sharmadhiraj.np/infinite-scrolling-listview-on-flutter-88d7a5e2bb4
 class DeedsList extends StatefulWidget {
-  DeedsList({Key key}) : super(key: key);
+  final FilterDeed filter;
+  DeedsList({Key key, this.filter}) : super(key: key);
 
   @override
-  DeedsListState createState() => DeedsListState();
+  DeedsListState createState() => DeedsListState(filter: filter);
 }
 
 class DeedsListState extends State<DeedsList> {
@@ -60,7 +68,7 @@ class DeedsListState extends State<DeedsList> {
   int _pageNumber;
   bool _error;
   bool _loading;
-  final int _defaultPhotosPerPageCount = 10;
+  final int _defaultDeedsPerPageCount = 10;
   final int _nextPageThreshold = 5;
   List<Deed> futureDeeds2;
   int timesFoundZeroDeeds = 0;
@@ -68,14 +76,13 @@ class DeedsListState extends State<DeedsList> {
 
   int _timeRequest;
 
-  final _filterFormKey = GlobalKey<FormState>();
+  ScrollController _scrollController = new ScrollController();
 
-  //Filter param variables
-  String _titleFilter;
-  String _deederFilter;
-  String _deededFilter;
-  int _distanceFilter;
-  LatLong _positionFilter;
+  FilterDeed deedFilter;  //Filter param variable
+
+  DeedsListState({FilterDeed filter}){
+    this.deedFilter = filter;
+  }
 
   @override
   void initState() {
@@ -88,12 +95,19 @@ class DeedsListState extends State<DeedsList> {
 
     _timeRequest = DateTime.now().millisecondsSinceEpoch;
 
-    _fetchDeeds(10, _timeRequest);
+    _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+        // ... call method to load more deeds
+        _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+      }
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    //return getBody();
     return Scaffold(
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,27 +118,18 @@ class DeedsListState extends State<DeedsList> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context){
-                        return Dialog(
-                          child: Stack(
-                            children: [
-                              Text(
-                                'Filter Deeds',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                ),
-                              ),
-                              _buildFilterForm(_filterFormKey)
-                            ],
-                          ),
-                        );
-                      }
+                onPressed: () async {
+                  final FilterDeed result = await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DeedFilterScreen(filter: this.deedFilter)),
                   );
+                  print('RECIEVED');
+                  print(result.toUrlQuery());
+                  setState(() {
+                    this.futureDeeds2.clear();
+                    this.deedFilter = result;
+                    _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+                  });
                   // Respond to button press
                 },
                 child: Text('Filter'),
@@ -135,38 +140,8 @@ class DeedsListState extends State<DeedsList> {
     );
   }
 
-  _buildFilterForm(Key key){
-    return Form(
-        key: key,
-        child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(8.0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.title),
-                      labelText: 'Title'
-                  ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                  onFieldSubmitted: (String value){
-                    setState(() {
-                      _titleFilter = value;
-                    });
-                  },
-                ),
-              ),
-            ]
-        )
-    );
-  }
-
   Widget getBody() {
+    print('BUILDING DEED LIST BODY');
     if (futureDeeds2.isEmpty) {
       if (_loading) {
         return Center(
@@ -181,57 +156,41 @@ class DeedsListState extends State<DeedsList> {
                 setState(() {
                   _loading = true;
                   _error = false;
-                  _fetchDeeds(10, _timeRequest);
+                  _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
                 });
               },
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text("Error while loading photos, tap to try agin"),
+                child: Text("Error loading deeds, tap to try again"),
               ),
             ));
+      } else {
+        return Center(
+          child: Text('No Deeds matching your criteria!'),
+        );
       }
     } else {
-      return ListView.builder(
-          itemCount: futureDeeds2.length + (_hasMore ? 1 : 0),
-          itemBuilder: (context, index) {
-            //if (index == futureDeeds2.length - _nextPageThreshold) {
-            if (index == futureDeeds2.length - _nextPageThreshold && timesFoundZeroDeeds < timesFoundZeroDeedsThreshold) {
-              _fetchDeeds(10, _timeRequest);
-            }
-            if(timesFoundZeroDeeds >= timesFoundZeroDeedsThreshold){
-              //TODO make an end item to show that at end of list : https://flutter.dev/docs/cookbook/lists/mixed-list
-              //return new EndItem(index);
-              //return new Text(index.toString() + ' End');
-            }
-            if (index == futureDeeds2.length) {
-              if (_error) {
-                return Center(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _loading = true;
-                          _error = false;
-                          _fetchDeeds(10, _timeRequest);
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text("Error while loading photos, tap to try agin"),
-                      ),
-                    ));
-              } else {
-                return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: CircularProgressIndicator(),
-                    ));
-              }
-            }
-            //final Deed deedLoc = futureDeeds2[index];
-            return DeedItem(futureDeeds2[index]);
-          });
+      List<Widget> children = [];
+
+      for(int index = 0; index < futureDeeds2.length; index++){
+        if(index % 10 == 0){
+          children.add(new BannerAdWidget());
+        }
+        children.add(new DeedItem(futureDeeds2[index]));
+        //If is last element, add ad widget
+        if(index == futureDeeds2.length - 1){
+          children.add(new BannerAdWidget());
+          children.add(LayoutUtils.listEndItemBuilder(message: 'No more deeds found!'));
+        }
+      }
+
+      //TODO use ListView.builder like in : https://flutter.dev/docs/cookbook/lists/mixed-list. Is it worth it? Have tried and didn't work
+      //TODO maybe is, as there seems to be performance issues with current impl
+      return ListView(
+        controller: _scrollController,
+        children: children,
+      );
     }
-    return Container();
   }
 
   List<Deed> _parseDeeds(String responseBody) {
@@ -246,21 +205,19 @@ class DeedsListState extends State<DeedsList> {
 
   Future<void> _fetchDeeds(int limit, int before) async {
     try {
-      int skip = (_pageNumber) * 10; //TODO needs to use the actual number of deeds!
-      skip = futureDeeds2.length;
-      //String url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before&start=$skip';
-      //String url = 'http://192.168.1.33:3000/deeds';
-      String url = '';
-      if(skip == 0){
-        url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before';
-      } else {
-        url = 'http://192.168.1.33:3000/deeds?limit=$limit&before=$before&start=$skip';
-      }
+      setState(() {
+        _loading = true;
+      });
 
+      int skip = (_pageNumber) * _defaultDeedsPerPageCount; //TODO needs to use the actual number of deeds!
+      skip = futureDeeds2.length;
+
+      String url = Globals.backendURL + '/deeds?' ;
+      url += (this.deedFilter != null && this.deedFilter.toUrlQuery().isNotEmpty) ? this.deedFilter.toUrlQuery() : '';
+      url += skip != 0 ? '&start=$skip' : '';
       print(url);
       final response = await http.Client().get(url);
       print('GOT DEEDS');
-      //return compute(parseDeeds, response.body);
       List<Deed> parsedDeeds = _parseDeeds(response.body);
       print('Number of deeds found: ' + parsedDeeds.length.toString());
 
@@ -278,6 +235,7 @@ class DeedsListState extends State<DeedsList> {
         futureDeeds2.addAll(parsedDeeds);
       });
     } catch (e) {
+      print(e);
       setState(() {
         _loading = false;
         _error = true;
@@ -286,21 +244,10 @@ class DeedsListState extends State<DeedsList> {
   }
 }
 
-class EndItem extends StatelessWidget {
-  EndItem(this._index);
-  final int _index;
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(_index.toString() + ' End'),
-    );
-  }
-}
-
 class DeedItem extends StatelessWidget {
   DeedItem(this._deed);
   final Deed _deed;
-  final LatLong statueOfLiberty = LatLong.fromDecimal(40.68972222, 72.04444444);  //Mocked User Location
+  final LatLng userLocation = Globals.mockedUser.home;  //TODO get actual location if available
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
@@ -308,8 +255,8 @@ class DeedItem extends StatelessWidget {
     return ListTile(
       //dense:true, //Makes stuff closer together & text smaller
       //isThreeLine: true, //Gives more space for subtitle (here, description), however can fuck / not fuck with other formatting (i.e. trailing size)
-      //Distance from user
-      leading: Container(
+      //Distance from user. If no user location, don't include a leading Widget (null)
+      leading: userLocation == null ? null : Container(
           padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
           decoration: BoxDecoration(
             color: Colors.grey[200],
@@ -319,7 +266,7 @@ class DeedItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                (GeoUtils.distanceInMeters(statueOfLiberty, _deed.location) / 1000).roundToDouble().toString() + ' km',
+                (GeoUtils.distanceInMeters(userLocation, _deed.location) / 1000).roundToDouble().toString() + ' km',
                 textAlign: TextAlign.center,
               ),
             ],
