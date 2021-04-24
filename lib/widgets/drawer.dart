@@ -6,6 +6,7 @@ class GDDrawer extends StatelessWidget {
   _pushRoute(context, route) {
     Navigator.pop(context); //Or after?
     Navigator.of(context).pushNamed(route);
+    //Navigator.pushReplacementNamed(context, route);
   }
 
   @override
@@ -39,8 +40,6 @@ class GDDrawer extends StatelessWidget {
             title: Text('Home'),
             leading: Icon(Icons.home),
             onTap: () {
-              //Navigator.pushReplacementNamed(context, Routes.home);
-
               _pushRoute(context, Routes.home);
             },
           ),
@@ -50,7 +49,8 @@ class GDDrawer extends StatelessWidget {
             onTap: () {
               // Update the state of the app
 
-              Navigator.pushReplacementNamed(context, Routes.deeds);
+              //Navigator.pushReplacementNamed(context, Routes.deeds);
+              _pushRoute(context, Routes.deeds);
 
               // Then close the drawer
               //Navigator.pop(context);
@@ -59,27 +59,29 @@ class GDDrawer extends StatelessWidget {
           ListTile(
             title: Text('Posts'),
             leading: Icon(Icons.public_rounded),
-            onTap: () {Navigator.pushReplacementNamed(context, Routes.posts);},
+            onTap: () {
+              _pushRoute(context, Routes.posts);
+            },
           ),
           ListTile(
             title: Text('Users'),
             leading: Icon(CupertinoIcons.person_3),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.users);
+              _pushRoute(context, Routes.users);
             },
           ),
           ListTile(
             title: Text('Account'),
             leading: Icon(CupertinoIcons.person),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.account);
+              _pushRoute(context, Routes.account);
             },
           ),
           ListTile(
             title: Text('Settings & About GD'),
             leading: Icon(Icons.settings),
             onTap: () {
-              Navigator.pushReplacementNamed(context, Routes.settings);
+              _pushRoute(context, Routes.settings);
             },
           ),
         ],
