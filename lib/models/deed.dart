@@ -18,8 +18,12 @@ class Deed {
   factory Deed.fromJson(Map<String, dynamic> json) {
     //TODO Check if have minimum to create Deed
 
-    double lat = GeoUtils.sanitizeCoord(json['location']['lat']);
-    double long = GeoUtils.sanitizeCoord(json['location']['long']);
+    double lat = 0;
+    double long = 0;
+    if(json.containsKey('location')){
+      double lat = GeoUtils.sanitizeCoord(json['location']['lat']);
+      double long = GeoUtils.sanitizeCoord(json['location']['long']);
+    }
 
     return new Deed(
       //deedId        : json['deedId'] as int,  //Shouldn't need anything else for null safety
