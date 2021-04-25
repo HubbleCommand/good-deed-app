@@ -21,8 +21,8 @@ class Deed {
     double lat = 0;
     double long = 0;
     if(json.containsKey('location')){
-      double lat = GeoUtils.sanitizeCoord(json['location']['lat']);
-      double long = GeoUtils.sanitizeCoord(json['location']['long']);
+      lat = GeoUtils.sanitizeCoord(json['location']['lat']);
+      long = GeoUtils.sanitizeCoord(json['location']['long']);
     }
 
     return new Deed(
