@@ -97,21 +97,22 @@ class DeedsListState extends State<DeedsList> {
 
     _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
 
-    _scrollController.addListener(() {
+    /*_scrollController.addListener(() {
       if (_scrollController.position.pixels ==
         _scrollController.position.maxScrollExtent) {
         // ... call method to load more deeds
         _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
       }
-    });
+    });*/
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            new BannerAdWidget(),
             Expanded(
               child: getBody(),
             ),
@@ -141,7 +142,72 @@ class DeedsListState extends State<DeedsList> {
   }
 
   Widget getBody() {
-    print('BUILDING DEED LIST BODY');
+    if (futureDeeds2.isEmpty) {
+      if (_loading) {
+        return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8),
+              child: CircularProgressIndicator(),
+            ));
+      } else if (_error) {
+        return Center(
+            child: InkWell(
+              onTap: () {
+                setState(() {
+                  _loading = true;
+                  _error = false;
+                  _fetchDeeds(10, _timeRequest);
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text("Error while loading photos, tap to try agin"),
+              ),
+            ));
+      }
+    } else {
+      return ListView.builder(
+          itemCount: futureDeeds2.length + (_hasMore ? 1 : 0),
+          itemBuilder: (context, index) {
+            //if (index == futureDeeds2.length - _nextPageThreshold) {
+            if (index == futureDeeds2.length - _nextPageThreshold && timesFoundZeroDeeds < timesFoundZeroDeedsThreshold) {
+              _fetchDeeds(10, _timeRequest);
+            }
+            if(timesFoundZeroDeeds >= timesFoundZeroDeedsThreshold){
+              //TODO make an end item to show that at end of list : https://flutter.dev/docs/cookbook/lists/mixed-list
+              //return new EndItem(index);
+              //return new Text(index.toString() + ' End');
+            }
+            if (index == futureDeeds2.length) {
+              if (_error) {
+                return Center(
+                    child: InkWell(
+                      onTap: () {
+                        setState(() {
+                          _loading = true;
+                          _error = false;
+                          _fetchDeeds(10, _timeRequest);
+                        });
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Text("Error while loading photos, tap to try agin"),
+                      ),
+                    ));
+              } else {
+                return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: CircularProgressIndicator(),
+                    ));
+              }
+            }
+            //final Deed deedLoc = futureDeeds2[index];
+            return DeedItem(futureDeeds2[index]);
+          });
+    }
+    return Container();
+    /*print('BUILDING DEED LIST BODY');
     if (futureDeeds2.isEmpty) {
       if (_loading) {
         return Center(
@@ -174,23 +240,22 @@ class DeedsListState extends State<DeedsList> {
 
       for(int index = 0; index < futureDeeds2.length; index++){
         if(index % 10 == 0){
-          children.add(new BannerAdWidget());
+          //children.add(new BannerAdWidget());
         }
         children.add(new DeedItem(futureDeeds2[index]));
         //If is last element, add ad widget
         if(index == futureDeeds2.length - 1){
-          children.add(new BannerAdWidget());
+          //children.add(new BannerAdWidget());
           children.add(LayoutUtils.listEndItemBuilder(message: 'No more deeds found!'));
         }
       }
 
       //TODO use ListView.builder like in : https://flutter.dev/docs/cookbook/lists/mixed-list. Is it worth it? Have tried and didn't work
-      //TODO maybe is, as there seems to be performance issues with current impl
       return ListView(
         controller: _scrollController,
         children: children,
       );
-    }
+    }*/
   }
 
   List<Deed> _parseDeeds(String responseBody) {
@@ -205,10 +270,11 @@ class DeedsListState extends State<DeedsList> {
 
   Future<void> _fetchDeeds(int limit, int before) async {
     try {
-      setState(() {
+      //THIS CAUSES ERRORS, cannot use setState immediately... (as this func is called in init state)
+      /*setState(() {
         _loading = true;
-      });
-
+      });*/
+      _loading = true;
       int skip = (_pageNumber) * _defaultDeedsPerPageCount; //TODO needs to use the actual number of deeds!
       skip = futureDeeds2.length;
 
