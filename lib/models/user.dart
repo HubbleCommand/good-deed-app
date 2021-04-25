@@ -3,12 +3,13 @@ import 'package:latlong/latlong.dart';
 
 class User { // / or Deedee
   final String userId;  //ID MUST be a string, as Firebase user ID is a string https://firebase.google.com/docs/reference/unity/class/firebase/auth/user-info-interface
-  final String name;
-  final String contact;
-  final LatLng home;
-  final String avatar;
+  final String name;      //User's display name
+  final String contact;   //TODO remove?
+  final LatLng home;      //Home location
+  final String avatar;    //Profile pic
+  final String story;     //Quick intro to the user
 
-  User({this.userId, this.name, this.contact, this.home, this.avatar});
+  User({this.userId, this.name, this.contact, this.home, this.avatar, this.story});
 
   @override
   String toString() {
@@ -20,7 +21,7 @@ class User { // / or Deedee
     double long = GeoUtils.sanitizeCoord(json['home']['long']);
 
     return new  User(
-      userId  : json['userId'] as String,
+      userId  : json['uuid'] as String,
       name    : json['name'] as String,
       contact : json['contact'] as String,
       //home    : json.containsKey('home') ? LatLong.fromJson(json['home']) : null,
