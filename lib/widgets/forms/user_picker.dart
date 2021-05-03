@@ -115,12 +115,11 @@ class _UserPickerScreenState extends State<UserPickerScreen> {
                     setState(() {
                       _searchName = text;
                     });
+                    setState(() {
+                      _userSuggestions.clear();
+                    });
                     if(text.isNotEmpty){
                       _fetchUserSuggestions(text);
-                    } else {
-                      setState(() {
-                        _userSuggestions.clear();
-                      });
                     }
                   },
                 ),
@@ -167,6 +166,8 @@ class _UserPickerScreenState extends State<UserPickerScreen> {
                       // Close the screen and return the selected users as the result.
                       if (_filterFormKey.currentState.validate()) {
                         _filterFormKey.currentState.save();
+                        print('SELECTED');
+                        print(selectedUsers);
                         Navigator.pop(context, selectedUsers);
                       }
                     },
