@@ -49,6 +49,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
           child: Column(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
+                //For radius, maybe use slider? https://www.javatpoint.com/flutter-slider
                 Padding(
                   padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
                   child: Text('Tap to select the area to filter in, along with the radius'),
