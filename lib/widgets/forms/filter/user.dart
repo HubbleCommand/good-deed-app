@@ -122,7 +122,7 @@ class _UserFilterScreenState extends State<UserFilterScreen> {
                                         },
                                         child: ListTile(
                                           title: Text(option.name, style: const TextStyle(color: Colors.black)),
-                                          trailing: ImageUtils.Image.buildIcon(option.avatar, 36.0, 36.0),
+                                          trailing: ImageUtils.Image.buildIcon(option.avatarURL, 36.0, 36.0),
                                         ),
                                       ),
                                     );
