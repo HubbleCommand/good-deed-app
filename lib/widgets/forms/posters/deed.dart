@@ -12,7 +12,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'dart:io';
 
-import '../globals.dart';
+import '../../../globals.dart';
 
 class NewDeedForm extends StatefulWidget {
   final User loggedInUser = Globals.mockedUser;

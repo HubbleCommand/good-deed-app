@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:good_deed/forms/filters/deed.dart';
+import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/widgets/forms/filter/deed.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/utils/geo.dart';
@@ -9,12 +9,12 @@ import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
-import 'adds.dart';
-import 'drawer.dart';
+import '../widgets/adds.dart';
+import '../widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'package:good_deed/forms/deed.dart';
+import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/widgets/forms/posters/deed.dart';
 
 class DeedsPage extends StatelessWidget {
   static const String routeName = '/deeds';

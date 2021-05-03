@@ -4,14 +4,14 @@ import 'package:good_deed/models/filters/user.dart';
 import 'package:good_deed/widgets/views/user.dart';
 import 'package:http/http.dart' as http;
 
-import 'drawer.dart';
+import '../widgets/drawer.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:latlong/latlong.dart';
-import 'adds.dart';
+import '../widgets/adds.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
