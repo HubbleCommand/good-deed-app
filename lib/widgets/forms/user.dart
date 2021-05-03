@@ -1,36 +1,21 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:good_deed/models/filters/user.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:latlong/latlong.dart';
 import 'package:http/http.dart' as http;
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 //Reusable user selector widget
 class UserSelectorFormWidget extends StatefulWidget {
-  final FilterUser filter;
   final Function onUserSelectedCallback;
 
-  UserSelectorFormWidget({this.filter, @required this.onUserSelectedCallback});
+  UserSelectorFormWidget({@required this.onUserSelectedCallback});
 
   @override
-  _UserSelectorFormWidgetState createState() => _UserSelectorFormWidgetState(filter: filter);
+  _UserSelectorFormWidgetState createState() => _UserSelectorFormWidgetState();
 }
 
 class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
-  FilterUser filter;
-
-  _UserSelectorFormWidgetState({this.filter});
-
-  @override
-  void initState() {
-    super.initState();
-    if(this.filter == null){
-      filter = new FilterUser();
-    }
-  }
 
   List<User> _parseUsers(String responseBody) {
     print('PARSING...');
@@ -78,10 +63,12 @@ class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
         print('You just selected $selection');
         widget.onUserSelectedCallback(selection);
       },
-      displayStringForOption: (User option) => option.name,
+      //displayStringForOption: (User option) => option.name,
+      displayStringForOption: (User option) => '',
       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<User> onSelected, Iterable<User> options){
         return Material(
           child: Container(
+          //child: SingleChildScrollView(
             //color: Colors.teal,
             child: ListView.builder(
               padding: EdgeInsets.all(10.0),
@@ -99,7 +86,7 @@ class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
                     },
                     child: ListTile(
                       title: Text(option.name, style: const TextStyle(color: Colors.black)),
-                      trailing: ImageUtils.Image.buildIcon(option.avatar, 36.0, 36.0),
+                      trailing: ImageUtils.Image.buildIcon(option.avatarURL, 36.0, 36.0),
                     ),
                   ),
                 );

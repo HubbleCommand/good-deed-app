@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/models/filters/deed.dart';
-import 'package:good_deed/models/filters/post.dart';
-import 'package:good_deed/models/filters/user.dart';
-import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'package:good_deed/widgets/deeds.dart';
-import 'package:good_deed/widgets/posts.dart';
-import 'package:good_deed/widgets/users.dart';
+import 'package:good_deed/models/filters/deed.dart';
+import 'package:good_deed/models/user.dart';
+import 'package:good_deed/routes/deeds.dart';
 import 'package:good_deed/utils/layout.dart';
 
 class UserPage extends StatelessWidget {
@@ -29,7 +24,7 @@ class UserPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
           ),
-          ImageUtils.Image.buildIcon(user.avatar, 190.0, 190.0),
+          ImageUtils.Image.buildIcon(user.avatarURL, 190.0, 190.0),
           LayoutUtils.splitter(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -37,21 +32,15 @@ class UserPage extends StatelessWidget {
               //Buttons for Deeds where is Deeder, Deeded, and Posts by user
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedsPage(filterDeed: new FilterDeed(deeder: this.user),)));
+                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedsPage(filterDeed: new FilterDeed(didders: [this.user]),)));
                 },
                 child: Text('Done Deeds'),
               ),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedsPage(filterDeed: new FilterDeed(deeded: this.user),)));
+                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedsPage(filterDeed: new FilterDeed(gotters: [this.user]),)));
                 },
                 child: Text('Recieved Deeds'),
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new PostsPage(filterPost: new FilterPost(user: this.user),)));
-                },
-                child: Text('Posts'),
               ),
             ],
           ),

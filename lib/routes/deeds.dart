@@ -1,20 +1,21 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/widgets/forms/filter/deed.dart';
-import 'package:good_deed/globals.dart';
+//import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed_v2/lib/utils/globals.dart';
 import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/forms/filter/deed.dart';
+import 'package:good_deed/widgets/forms/posters/deed.dart';
 import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
-import '../widgets/adds.dart';
-import '../widgets/drawer.dart';
+import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/widgets/forms/posters/deed.dart';
+
+import '../globals.dart';
 
 class DeedsPage extends StatelessWidget {
   static const String routeName = '/deeds';
@@ -31,25 +32,38 @@ class DeedsPage extends StatelessWidget {
         drawer: GDDrawer(),
         body: Scaffold(
           body: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Expanded(
-                //child: Deeds(),
-                child: DeedsList(filter: filterDeed,),
-              ),
-            ]
-        ),
-        floatingActionButton: InkWell(
-          splashColor: Colors.blue,
-          child: FloatingActionButton(
-            child: Icon(Icons.add),
-            tooltip: 'Create new deed',
-            onPressed: (){
-              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NewDeedForm()));
-            },
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  //child: Deeds(),
+                  child: DeedsList(filter: filterDeed,),
+                ),
+              ]
           ),
-        ),
-      )
+          floatingActionButton: InkWell(
+            splashColor: Colors.blue,
+            child: FloatingActionButton(
+              child: Icon(Icons.add),
+              tooltip: 'Create new deed',
+              onPressed: (){
+                if(true){
+                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NewDeedForm()));
+                } else {
+                  showDialog(
+                      context: context,
+                      builder: (BuildContext context){
+                        //return PrivacyAlertDialog();
+                        return AlertDialog(
+                          title: Text('Sign in to contribute'),
+                          content: Text('To be able to submit content, you must have an account & be signed in \n '),
+                        );
+                      }
+                  );
+                }
+              },
+            ),
+          ),
+        )
     );
   }
 }
@@ -96,23 +110,25 @@ class DeedsListState extends State<DeedsList> {
     _timeRequest = DateTime.now().millisecondsSinceEpoch;
 
     _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
-
-    /*_scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-        _scrollController.position.maxScrollExtent) {
-        // ... call method to load more deeds
-        _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
-      }
-    });*/
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-          //crossAxisAlignment: CrossAxisAlignment.start,
+        //crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new BannerAdWidget(),
+            //new BannerAdWidget(),
+            LayoutUtils.widenButton(
+              ElevatedButton(
+                onPressed: () async {
+                  this.futureDeeds2.clear();
+                  //this.deedFilter = result;
+                  _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+                },
+                child: Text('Reload'),
+              ),
+            ),
             Expanded(
               child: getBody(),
             ),
@@ -124,14 +140,12 @@ class DeedsListState extends State<DeedsList> {
                     context,
                     MaterialPageRoute(builder: (context) => DeedFilterScreen(filter: this.deedFilter)),
                   );
-                  print('RECIEVED');
-                  print(result.toUrlQuery());
+                  print('RECIEVED : ' + result.toUrlQuery());
                   setState(() {
                     this.futureDeeds2.clear();
                     this.deedFilter = result;
                     _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
                   });
-                  // Respond to button press
                 },
                 child: Text('Filter'),
               ),
@@ -144,26 +158,12 @@ class DeedsListState extends State<DeedsList> {
   Widget getBody() {
     if (futureDeeds2.isEmpty) {
       if (_loading) {
-        return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ));
+        return _buildLoadingIndicator();
       } else if (_error) {
-        return Center(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _loading = true;
-                  _error = false;
-                  _fetchDeeds(10, _timeRequest);
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text("Error while loading photos, tap to try agin"),
-              ),
-            ));
+        //TODO this can appear when no deeds are found! This should ONLY appear when an actual error occurs in fetching deeds...
+        return _buildErrorWidget(message: 'Error while fetching deeds, tap to try again');
+      } else {
+        return _buildErrorWidget(message: 'No more deeds, or no deeds matching criteria! \n Apply different filters, or tap to try again');
       }
     } else {
       return ListView.builder(
@@ -180,33 +180,15 @@ class DeedsListState extends State<DeedsList> {
             }
             if (index == futureDeeds2.length) {
               if (_error) {
-                return Center(
-                    child: InkWell(
-                      onTap: () {
-                        setState(() {
-                          _loading = true;
-                          _error = false;
-                          _fetchDeeds(10, _timeRequest);
-                        });
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Text("Error while loading photos, tap to try agin"),
-                      ),
-                    ));
+                return _buildErrorWidget(message: 'Error while displaying photos, tap to try again');
               } else {
-                return Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: CircularProgressIndicator(),
-                    ));
+                return _buildLoadingIndicator();
               }
             }
-            //final Deed deedLoc = futureDeeds2[index];
             return DeedItem(futureDeeds2[index]);
           });
     }
-    return Container();
+    //return Container();
     /*print('BUILDING DEED LIST BODY');
     if (futureDeeds2.isEmpty) {
       if (_loading) {
@@ -258,6 +240,32 @@ class DeedsListState extends State<DeedsList> {
     }*/
   }
 
+  Widget _buildErrorWidget({String message}){
+    return Center(
+        child: InkWell(
+          onTap: () {
+            setState(() {
+              _loading = true;
+              _error = false;
+              _fetchDeeds(10, _timeRequest);
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Text(message, textAlign: TextAlign.center,),
+          ),
+        )
+    );
+  }
+
+  Widget _buildLoadingIndicator(){
+    return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: CircularProgressIndicator(),
+        ));
+  }
+
   List<Deed> _parseDeeds(String responseBody) {
     print('PARSING...');
     final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
@@ -275,10 +283,9 @@ class DeedsListState extends State<DeedsList> {
         _loading = true;
       });*/
       _loading = true;
-      int skip = (_pageNumber) * _defaultDeedsPerPageCount; //TODO needs to use the actual number of deeds!
-      skip = futureDeeds2.length;
+      int skip = futureDeeds2.length; //(_pageNumber) * _defaultDeedsPerPageCount; //needs to use the actual number of deeds!
 
-      String url = Globals.backendURL + '/deeds?' ;
+      String url = Globals.backendURL + '/deedsv2?' ;
       url += (this.deedFilter != null && this.deedFilter.toUrlQuery().isNotEmpty) ? this.deedFilter.toUrlQuery() : '';
       url += skip != 0 ? '&start=$skip' : '';
       print(url);
@@ -301,6 +308,7 @@ class DeedsListState extends State<DeedsList> {
         futureDeeds2.addAll(parsedDeeds);
       });
     } catch (e) {
+      print('ERROR');
       print(e);
       setState(() {
         _loading = false;
@@ -313,7 +321,7 @@ class DeedsListState extends State<DeedsList> {
 class DeedItem extends StatelessWidget {
   DeedItem(this._deed);
   final Deed _deed;
-  final LatLng userLocation = Globals.mockedUser.home;  //TODO get actual location if available
+  final LatLng userLocation = Globals.mockedHome;  //TODO get actual location if available
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
@@ -347,19 +355,13 @@ class DeedItem extends StatelessWidget {
       subtitle: Text(
         _deed.description.length > 30 ? _deed.description.substring(0, 29) + '...' : _deed.description,
       ),
-      //Trailing User Avatar images
-      trailing: Container(
-        child: new Stack(
-          clipBehavior:Clip.none,
-          children: <Widget>[
-            ImageUtils.Image.buildIcon(_deed.deeder.avatar, 36.0, 36.0),
-            new Positioned(
-              left: 20.0,
-              child:ImageUtils.Image.buildIcon(_deed.deeded.avatar, 36.0, 36.0),
-            ),
-          ],
-        ),
-      ),
+      /*trailing: Container(
+        //child: _deed.pictures.length > 0 ? ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0) : null,
+        //child: (_deed.pictures != null && _deed.pictures.length > 0) ? ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0) : null,
+      ),*/
+      trailing: (_deed.pictures != null && _deed.pictures.length > 0) ? Container(
+        child: ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0),
+      ) : null,
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed)));
       },

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:good_deed/widgets/views/user.dart';
-import '../drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'package:good_deed/widgets/users.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/picture_carousel.dart';
+import 'package:good_deed/widgets/views/user.dart';
+import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 class DeedPage extends StatelessWidget {
   final _titleStyle = TextStyle(fontSize: 35.0);
@@ -13,29 +12,90 @@ class DeedPage extends StatelessWidget {
   static const String routeName = '/deed';
   final Deed deed;
 
+  final double userProfileIconDimensions = 25.0;
+
   DeedPage({Key key, this.deed}) : super(key: key);
 
-  Widget getUserThingy({BuildContext context, User user, String text}){
+  Widget getUserThingy({BuildContext context, User user, double dimension}){
     return InkWell(
       onTap: (){
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: user)));
       },
-      child: Column(
+      /*child: Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(text),
-          ImageUtils.Image.buildIcon(user.avatar, 75.0, 75.0),
+          ImageUtils.Image.buildIcon(user.avatarURL, 75.0, 75.0),
         ],
-      ),
+      ),*/
+      child: ImageUtils.Image.buildIcon(user.avatarURL, 75.0, 75.0),
     );
+  }
+
+  Widget _buildListThingy(List<User> data, {BuildContext context}){
+    return ListView.builder(
+        shrinkWrap: true,
+        physics: ClampingScrollPhysics(),
+        scrollDirection: Axis.horizontal, //Makes list horizontal
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          //return ImageUtils.Image.buildIcon(data[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+          return getUserThingy(context: context, user: data[index], dimension: userProfileIconDimensions);
+        }
+    );
+  }
+
+  Widget _buildPostersRow({BuildContext context}){
+    print(deed.poster);
+    if(deed.poster != null && deed.poster.avatarURL.isNotEmpty){
+      //return _buildListThingy(deed.poster);
+      return ImageUtils.Image.buildIcon(deed.poster.avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _buildDiddersRow({BuildContext context}){
+    if(deed.didders != null && deed.didders.isNotEmpty){
+      return _buildListThingy(deed.didders, context: context);
+      /*return ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          //scrollDirection: Axis.horizontal, //Makes list horizontal
+          itemCount: deed.didders.length,
+          itemBuilder: (context, index) {
+            return ImageUtils.Image.buildIcon(deed.didders[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+          }
+      );*/
+    } else {
+      print("Y");
+      return Container();
+    }
+  }
+
+  Widget _buildGottersRow({BuildContext context}){
+    if(deed.gotters != null && deed.gotters.isNotEmpty){
+      return _buildListThingy(deed.gotters, context: context);
+      /*return ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          scrollDirection: Axis.horizontal, //Makes list horizontal
+          itemCount: deed.gotters.length,
+          itemBuilder: (context, index) {
+            return ImageUtils.Image.buildIcon(deed.gotters[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+          }
+      );*/
+    } else {
+      return Container();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: AppBar(
-        title: Text(deed.title),
+        title: Text(deed.title),  //Don't need to worry about text overflow, handled already
       ),
       //drawer: GDDrawer(),
       body: ListView(
@@ -43,15 +103,44 @@ class DeedPage extends StatelessWidget {
           Padding(
             padding: EdgeInsets.all(16.0),
           ),
-          ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
+          //ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
+          PictureCarouselWidget(imageUrls: deed.pictures, imageDimensions: 190.0,),
           LayoutUtils.splitter(),
+
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              getUserThingy(context: context, user: deed.deeder, text: 'Deeder'),
-              getUserThingy(context: context, user: deed.deeded, text: 'Deeded'),
+              Text('Posted by: '),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0),
+                height: userProfileIconDimensions,
+                child: _buildPostersRow(),
+              ),
             ],
           ),
+
+          Row(
+            children: [
+              Text('Didders: '),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0),
+                height: userProfileIconDimensions,
+                child: _buildDiddersRow(context: context),
+              ),
+            ],
+          ),
+
+          Row(
+            children: [
+              Text('Gotters: '),
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 20.0),
+                height: userProfileIconDimensions,
+                child: _buildGottersRow(context: context),
+              ),
+            ],
+          ),
+
+
           LayoutUtils.splitter(),
           Column(
             mainAxisSize: MainAxisSize.min,

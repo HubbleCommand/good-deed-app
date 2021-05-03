@@ -1,25 +1,23 @@
 //To search users / sign up
 import 'package:flutter/material.dart';
-import 'package:good_deed/models/filters/user.dart';
+import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/adds.dart';
+import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/widgets/views/user.dart';
 import 'package:http/http.dart' as http;
 
-import '../widgets/drawer.dart';
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-import 'package:good_deed/globals.dart';
+//import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed_v2/lib/utils/globals.dart';
 import 'package:good_deed/utils/geo.dart';
-import 'package:good_deed/utils/layout.dart';
 import 'package:latlong/latlong.dart';
-import '../widgets/adds.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
+import '../globals.dart';
+
 class UsersPage extends StatelessWidget {
   static const String routeName = '/users';
-  final FilterUser filterUser;
-
-  UsersPage({this.filterUser});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +32,7 @@ class UsersPage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   //child: Deeds(),
-                  child: UsersList(filter: filterUser,),
+                  child: UsersList(),
                 ),
               ]
           ),
@@ -45,11 +43,10 @@ class UsersPage extends StatelessWidget {
 
 //TODO look at this: https://medium.com/@sharmadhiraj.np/infinite-scrolling-listview-on-flutter-88d7a5e2bb4
 class UsersList extends StatefulWidget {
-  final FilterUser filter;
-  UsersList({Key key, this.filter}) : super(key: key);
+  UsersList({Key key}) : super(key: key);
 
   @override
-  UsersListState createState() => UsersListState(filter: filter);
+  UsersListState createState() => UsersListState();
 }
 
 class UsersListState extends State<UsersList> {
@@ -66,12 +63,6 @@ class UsersListState extends State<UsersList> {
   int _timeRequest;
 
   ScrollController _scrollController = new ScrollController();
-
-  FilterUser deedFilter;  //Filter param variable
-
-  UsersListState({FilterUser filter}){
-    this.deedFilter = filter;
-  }
 
   @override
   void initState() {
@@ -184,7 +175,7 @@ class UsersListState extends State<UsersList> {
   List<User> _parseUsers(String responseBody) {
     print('PARSING...');
     final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
-    print('DECODED DEEDS');
+    print('DECODED USERS');
 
     var calced = parsed.map<User>((json) => User.fromJson(json)).toList();
     print('DID LAST THING');
@@ -201,7 +192,7 @@ class UsersListState extends State<UsersList> {
       skip = futureDeeds2.length;
 
       String url = Globals.backendURL + '/users?' ;
-      url += (this.deedFilter != null && this.deedFilter.toUrlQuery().isNotEmpty) ? this.deedFilter.toUrlQuery() : '';
+
       url += skip != 0 ? '&start=$skip' : '';
       print(url);
       final response = await http.Client().get(url);
@@ -235,7 +226,6 @@ class UsersListState extends State<UsersList> {
 class UserItem extends StatelessWidget {
   UserItem(this._user);
   final User _user;
-  final LatLng userLocation = Globals.mockedUser.home;  //TODO get actual location if available
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
@@ -245,7 +235,7 @@ class UserItem extends StatelessWidget {
         _user.name.length > 20 ? _user.name.substring(0, 19) + '...' : _user.name,
         style: _biggerFont,
       ),
-      trailing: ImageUtils.Image.buildIcon(_user.avatar, 36.0, 36.0),
+      trailing: ImageUtils.Image.buildIcon(_user.avatarURL, 36.0, 36.0),
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: _user)));
       },
