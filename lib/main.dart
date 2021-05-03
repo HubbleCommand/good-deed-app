@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/routes/Routes.dart';
 
-import 'package:good_deed/widgets/home.dart';
+import 'package:good_deed/routes/home.dart';
 //import 'package:flutter_localizations/flutter_localizations.dart';
 
 var url = 'https://localhost:3000';
