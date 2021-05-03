@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:latlong/latlong.dart';
 
-import 'models/user.dart';
+import 'package:good_deed/models/user.dart';
 
 //https://stackoverflow.com/questions/55243106/dart-nested-classes-how-to-access-child-class-variables
 class Globals{
