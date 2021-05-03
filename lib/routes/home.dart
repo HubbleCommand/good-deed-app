@@ -5,8 +5,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart';
 import 'package:deep_pick/deep_pick.dart';
+import 'package:good_deed/utils/image.dart' as ImageUtils;
 
-int _counter = 0; //TODO this should be in _MyHomePageState
 class MyHomePage extends StatefulWidget {
   static const String routeName = "/home";
   //static String get routeName => _routeName;
@@ -28,20 +28,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  //int _counter = counter;
-  //int _deedCount;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     // This method is rerun every time setState is called, for instance as done
@@ -51,68 +37,43 @@ class _MyHomePageState extends State<MyHomePage> {
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
     return Scaffold(
-        appBar: AppBar(
-          // Here we take the value from the MyHomePage object that was created by
-          // the App.build method, and use it to set our appbar title.
-          title: Text(widget.title),
+      appBar: AppBar(
+        // Here we take the value from the MyHomePage object that was created by
+        // the App.build method, and use it to set our appbar title.
+        title: Text(widget.title),
+      ),
+      drawer: GDDrawer(),
+      body: Center(
+        // Center is a layout widget. It takes a single child and positions it
+        // in the middle of the parent.
+        child: Column(
+          // Column is also a layout widget. It takes a list of children and
+          // arranges them vertically. By default, it sizes itself to fit its
+          // children horizontally, and tries to be as tall as its parent.
+          //
+          // Invoke "debug painting" (press "p" in the console, choose the
+          // "Toggle Debug Paint" action from the Flutter Inspector in Android
+          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
+          // to see the wireframe for each widget.
+          //
+          // Column has various properties to control how it sizes itself and
+          // how it positions its children. Here we use mainAxisAlignment to
+          // center the children vertically; the main axis here is the vertical
+          // axis because Columns are vertical (the cross axis would be
+          // horizontal).
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            //https://www.dropbox.com/s/efqvccharfgjcuf/wot.jpg?dl=0
+            //ImageUtils.Image.buildIcon('https://previews.dropbox.com/p/thumb/ABIwuHVkjqiR4GG-ArxcYWkO4YOR89DzyDZCSMTRogWAuMnF_4YNw0F_BGrtxQ6efMoPHJ5f-FwMlLCWXY-5_SbEcDuorNpWiDeUbpq8ZuoUQqxraNEzm3lK52GUWFwiEwUuePq6eeEXXHlnvAOsTXNxEz_EMchyCrxWArd-ximdv2gIt3b3O91XRatOWLguaJ5wJQUJxeBdmVUalrDkvijJnqbpTiA8Tzkli6fDU6tWDUTXdfFLGwnVB4DT3N2nd1LW1kQ6EaYYMaarWfOGtN-dv9JhNibSJocaUfsI61x9TKN9W9gffz2DykdDLJCWIV-wajoe01bV0Y8HHA0y1_0bJae6pIDWRtSr9Mu4PVGGDQ/p.jpeg?fv_content=true&size_mode=5', 36.0, 36.0),
+            Icon(Icons.public_sharp, size: 250),
+            Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Divider(),
+            ),
+            DeedCountWidget(),
+          ],
         ),
-        drawer: GDDrawer(),
-        body: Center(
-          // Center is a layout widget. It takes a single child and positions it
-          // in the middle of the parent.
-          child: Column(
-            // Column is also a layout widget. It takes a list of children and
-            // arranges them vertically. By default, it sizes itself to fit its
-            // children horizontally, and tries to be as tall as its parent.
-            //
-            // Invoke "debug painting" (press "p" in the console, choose the
-            // "Toggle Debug Paint" action from the Flutter Inspector in Android
-            // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-            // to see the wireframe for each widget.
-            //
-            // Column has various properties to control how it sizes itself and
-            // how it positions its children. Here we use mainAxisAlignment to
-            // center the children vertically; the main axis here is the vertical
-            // axis because Columns are vertical (the cross axis would be
-            // horizontal).
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Icon(Icons.public_sharp, size: 250),
-              Padding(
-                padding: EdgeInsets.all(16.0),
-                child: Divider(),
-              ),
-              DeedCountWidget(),
-              Text(
-                '$_counter',
-                style: Theme.of(context).textTheme.headline4,
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: InkWell(
-          splashColor: Colors.blue,
-          onLongPress: () {
-            // handle your long press functionality here
-            setState(() {
-              _counter = 0;
-            });
-
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: const Text('Reset your counter!'),
-              duration: const Duration(seconds: 3),
-              action: SnackBarAction(
-                label: 'ACTION',
-                onPressed: () { },
-              ),
-            ));
-          },
-          child: FloatingActionButton(
-            child: Icon(Icons.add),
-            //tooltip: 'Increment',
-            onPressed: _incrementCounter,
-          ),
-        )
+      ),
       // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
@@ -130,10 +91,10 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
   void initState() {
     super.initState();
     _count = getDeedCount().timeout(
-      Duration(seconds:10),
-      onTimeout: (){
-        return -1;
-      }
+        Duration(seconds:10),
+        onTimeout: (){
+          return -1;
+        }
     );
   }
 
