@@ -57,51 +57,29 @@ class _DeedFilterScreenState extends State<DeedFilterScreen> {
 
   //TODO remove, do on another page for proper scrolling & Autocomplete isn't that good
   Widget _buildUserAreaThingy({String displayText, List<User> users}){
-    return Column(
-      children: [
-        Text(displayText),
-        Row(
-          children: [
-            Expanded(
-              child: new UserSelectorFormWidget(
-                  onUserSelectedCallback: (User selectedUser){
-                    setState(() {
-                      if(!_checkIfUserExists(selectedUser, users)){
-                        users.add(selectedUser);
-                      } else {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: const Text('You have already selected this user'),
-                          duration: const Duration(seconds: 3),
-                        ));
-                      }
-                    });
-                  }
-              ),
-            ),
-          ],
-        ),
-        Container(
-          margin: EdgeInsets.symmetric(vertical: 20.0),
-          height: 30.0,
-          child: ListView.builder(
-              shrinkWrap: true,
-              physics: ClampingScrollPhysics(),
-              scrollDirection: Axis.horizontal, //Makes list horizontal
-              itemCount: users.length,
-              itemBuilder: (context, index){
-                return Chip(
-                  label: Text(users[index].name),
-                  avatar: ImageUtils.Image.buildIcon(users[index].avatarURL, 25.0, 25.0), //TODO don't hard-code doubles
-                  onDeleted: (){
-                    setState(() {
-                      users.removeAt(index);
-                    });
-                  },
-                );
-              }
-          ),
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ElevatedButton(
+        onPressed: () async {
+          // Close the screen and return "Nope!" as the result.
+          final List<User> result = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => UserPickerScreen(preSelectedUsers: users,)),
+          );
+          print("RETURNED");
+          //TODO fix, users = x doesn;t work, might need to use setState!
+          /*setState(() {
+            users = result;
+          });*/
+          print(result);
+          //users = result;
+          users.clear();
+          users.addAll(result);
+          print(users);
+        },
+        //child: Text('Filter by posters'),
+        child: Text(displayText),
+      ),
     );
   }
 
@@ -265,6 +243,7 @@ class _DeedFilterScreenState extends State<DeedFilterScreen> {
                         _filterFormKey.currentState.save();
                         Navigator.pop(context, this.filter);
                       }
+                      print(this.filter);
                     },
                     child: Text('Apply Filters'),
                   ),
