@@ -6,9 +6,9 @@ import 'package:good_deed/models/filters/user.dart';
 import 'package:good_deed/models/post.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'package:good_deed/widgets/deeds.dart';
-import 'package:good_deed/widgets/posts.dart';
-import 'package:good_deed/widgets/users.dart';
+import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/deeds.dart';
+import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/posts.dart';
+import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/users.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/views/user.dart';
 
