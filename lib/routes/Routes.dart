@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-//import 'package:good_deed/routes/posts.dart';
 import 'package:good_deed/routes/users.dart';
 
 import 'package:good_deed/widgets/account.dart';
@@ -12,7 +11,6 @@ class Routes {
   static const String home = MyHomePage.routeName;
   static const String users = UsersPage.routeName;
   static const String account = AccountPage.routeName;
-  //static const String posts = PostsPage.routeName;
   static const String settings = SettingsPage.routeName;
   //static const String notes = NotesPage.routeName;
 
@@ -30,7 +28,6 @@ class Routes {
     D.DeedsPage.routeName: (context) => D.DeedsPage(),
     UsersPage.routeName: (context) => UsersPage(),
     AccountPage.routeName: (context) => AccountPage(),
-    //PostsPage.routeName: (context) => PostsPage(),
     SettingsPage.routeName: (context) => SettingsPage(),
   };
 }
