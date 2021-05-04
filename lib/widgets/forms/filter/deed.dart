@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
@@ -7,13 +5,8 @@ import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/models/filters/location.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
-import 'package:good_deed/widgets/forms/filter/user.dart';
 import 'package:latlong/latlong.dart';
-import 'package:http/http.dart' as http;
 import '../map_picker.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
-
-import '../user.dart';
 import '../user_picker.dart';
 
 class DeedFilterScreen extends StatefulWidget {
@@ -46,15 +39,6 @@ class _DeedFilterScreenState extends State<DeedFilterScreen> {
     }
   }
 
-  bool _checkIfUserExists(User user, List<User> users){
-    for(int i = 0; i < users.length; i++){
-      if(users[i].uuid == user.uuid){
-        return true;
-      }
-    }
-    return false;
-  }
-
   //TODO remove, do on another page for proper scrolling & Autocomplete isn't that good
   Widget _buildUserAreaThingy({String displayText, List<User> users}){
     return Padding(
@@ -67,17 +51,11 @@ class _DeedFilterScreenState extends State<DeedFilterScreen> {
             MaterialPageRoute(builder: (context) => UserPickerScreen(preSelectedUsers: users,)),
           );
           print("RETURNED");
-          //TODO fix, users = x doesn;t work, might need to use setState!
-          /*setState(() {
-            users = result;
-          });*/
-          print(result);
-          //users = result;
+          //TODO fix, users = x doesn't work, not even in setState!
           users.clear();
           users.addAll(result);
           print(users);
         },
-        //child: Text('Filter by posters'),
         child: Text(displayText),
       ),
     );
