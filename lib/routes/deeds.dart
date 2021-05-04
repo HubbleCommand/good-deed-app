@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed_v2/lib/utils/globals.dart';
 import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:good_deed/utils/layout.dart';
@@ -12,7 +11,6 @@ import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 import '../globals.dart';
@@ -89,8 +87,6 @@ class DeedsListState extends State<DeedsList> {
   int timesFoundZeroDeedsThreshold = 5;
 
   int _timeRequest;
-
-  ScrollController _scrollController = new ScrollController();
 
   FilterDeed deedFilter;  //Filter param variable
 
@@ -174,9 +170,7 @@ class DeedsListState extends State<DeedsList> {
               _fetchDeeds(10, _timeRequest);
             }
             if(timesFoundZeroDeeds >= timesFoundZeroDeedsThreshold){
-              //TODO make an end item to show that at end of list : https://flutter.dev/docs/cookbook/lists/mixed-list
-              //return new EndItem(index);
-              //return new Text(index.toString() + ' End');
+              //TODO make an end item to show that at end of list : https://flutter.dev/docs/cookbook/lists/mixed-list Is it worth it? Have tried and didn't work
             }
             if (index == futureDeeds2.length) {
               if (_error) {
@@ -186,58 +180,9 @@ class DeedsListState extends State<DeedsList> {
               }
             }
             return DeedItem(futureDeeds2[index]);
-          });
-    }
-    //return Container();
-    /*print('BUILDING DEED LIST BODY');
-    if (futureDeeds2.isEmpty) {
-      if (_loading) {
-        return Center(
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: CircularProgressIndicator(),
-            ));
-      } else if (_error) {
-        return Center(
-            child: InkWell(
-              onTap: () {
-                setState(() {
-                  _loading = true;
-                  _error = false;
-                  _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Text("Error loading deeds, tap to try again"),
-              ),
-            ));
-      } else {
-        return Center(
-          child: Text('No Deeds matching your criteria!'),
-        );
-      }
-    } else {
-      List<Widget> children = [];
-
-      for(int index = 0; index < futureDeeds2.length; index++){
-        if(index % 10 == 0){
-          //children.add(new BannerAdWidget());
-        }
-        children.add(new DeedItem(futureDeeds2[index]));
-        //If is last element, add ad widget
-        if(index == futureDeeds2.length - 1){
-          //children.add(new BannerAdWidget());
-          children.add(LayoutUtils.listEndItemBuilder(message: 'No more deeds found!'));
-        }
-      }
-
-      //TODO use ListView.builder like in : https://flutter.dev/docs/cookbook/lists/mixed-list. Is it worth it? Have tried and didn't work
-      return ListView(
-        controller: _scrollController,
-        children: children,
+          }
       );
-    }*/
+    }
   }
 
   Widget _buildErrorWidget({String message}){
@@ -285,6 +230,7 @@ class DeedsListState extends State<DeedsList> {
       _loading = true;
       int skip = futureDeeds2.length; //(_pageNumber) * _defaultDeedsPerPageCount; //needs to use the actual number of deeds!
 
+      print(this.deedFilter);
       String url = Globals.backendURL + '/deedsv2?' ;
       url += (this.deedFilter != null && this.deedFilter.toUrlQuery().isNotEmpty) ? this.deedFilter.toUrlQuery() : '';
       url += skip != 0 ? '&start=$skip' : '';
@@ -355,10 +301,6 @@ class DeedItem extends StatelessWidget {
       subtitle: Text(
         _deed.description.length > 30 ? _deed.description.substring(0, 29) + '...' : _deed.description,
       ),
-      /*trailing: Container(
-        //child: _deed.pictures.length > 0 ? ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0) : null,
-        //child: (_deed.pictures != null && _deed.pictures.length > 0) ? ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0) : null,
-      ),*/
       trailing: (_deed.pictures != null && _deed.pictures.length > 0) ? Container(
         child: ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0),
       ) : null,
