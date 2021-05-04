@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:good_deed/models/user.dart';
 import 'package:latlong/latlong.dart';
 

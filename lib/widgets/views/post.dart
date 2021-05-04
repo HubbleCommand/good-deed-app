@@ -1,14 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/models/filters/deed.dart';
-import 'package:good_deed/models/filters/post.dart';
-import 'package:good_deed/models/filters/user.dart';
 import 'package:good_deed/models/post.dart';
-import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/deeds.dart';
-import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/posts.dart';
-import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed/lib/routes/users.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/views/user.dart';
 
