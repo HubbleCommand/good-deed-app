@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/models/filters/deed.dart';
@@ -44,7 +45,8 @@ class DeedsPage extends StatelessWidget {
               child: Icon(Icons.add),
               tooltip: 'Create new deed',
               onPressed: (){
-                if(true){
+                if(FirebaseAuth.instance.currentUser != null){
+                  print(FirebaseAuth.instance.currentUser);
                   Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NewDeedForm()));
                 } else {
                   showDialog(
@@ -53,7 +55,7 @@ class DeedsPage extends StatelessWidget {
                         //return PrivacyAlertDialog();
                         return AlertDialog(
                           title: Text('Sign in to contribute'),
-                          content: Text('To be able to submit content, you must have an account & be signed in \n '),
+                          content: Text('To be able to submit content, you must have an account & be signed in \n\nGo to the Drawer -> Account, and sign in or sign up with your preferred provider.'),
                         );
                       }
                   );
@@ -267,7 +269,8 @@ class DeedsListState extends State<DeedsList> {
 class DeedItem extends StatelessWidget {
   DeedItem(this._deed);
   final Deed _deed;
-  final LatLng userLocation = Globals.mockedHome;  //TODO get actual location if available
+  //final LatLng userLocation = Globals.mockedHome;  //TODO get actual location if available
+  final LatLng userLocation = null;
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
