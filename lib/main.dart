@@ -1,13 +1,26 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/routes/Routes.dart';
 
 import 'package:good_deed/routes/home.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:flutter_localizations/flutter_localizations.dart';
 
 var url = 'https://localhost:3000';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+
+  //Initialise ad stuff
+  MobileAds.instance.initialize();
+
+  //Initialise Firebase login stuff
+  await Firebase.initializeApp();
+
+  //Set default language
+  //auto_localization: ^1.1.7
+  //BaseLanguage().setBaseLanguage("en"); //Set default language
   runApp(GoodDeed());
 }
 
