@@ -1,6 +1,8 @@
 # Flutter Tips & Tricks : Known issues using android studio
-- project files not loading in project explorer -> [change from Android to Project view](https://github.com/flutter/flutter-intellij/issues/4806)
+- Project files not loading in project explorer -> [change from Android to Project view](https://github.com/flutter/flutter-intellij/issues/4806)
 - Weird gradle version build crash, can be fixed by upgrading gradle with [this](https://www.google.com/search?q=flutter+upgrade+gradle+version), [this](https://medium.com/flutter-community/managing-packages-in-flutter-6018cecaf3a7), [this](https://www.reddit.com/r/Flutter/comments/dlluyj/update_gradle/), and [this](https://stackoverflow.com/questions/58505199/is-there-any-way-to-create-a-new-flutter-project-with-upgraded-gradle-version)
+- Build issue No such file found error ...\external_file_lib_dex_archives\debug  can be fixed by [removing the .gradle folder from the android project](https://github.com/facebook/react-native/issues/28954)
+
 # Good Deed Cross-Platform Mobile App
 
 Flutter application to share good deeds. 
