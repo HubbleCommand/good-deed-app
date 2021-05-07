@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
+import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/picture_carousel.dart';
 import 'package:good_deed/widgets/views/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
-class DeedPage extends StatelessWidget {
+class DeedView extends StatelessWidget{
   final _titleStyle = TextStyle(fontSize: 35.0);
   final _descriptionStyle = TextStyle(fontSize: 15.0);
   static const String routeName = '/deed';
@@ -14,7 +15,7 @@ class DeedPage extends StatelessWidget {
 
   final double userProfileIconDimensions = 25.0;
 
-  DeedPage({Key key, this.deed}) : super(key: key);
+  DeedView({Key key, this.deed}) : super(key: key);
 
   Widget getUserThingy({BuildContext context, User user, double dimension}){
     return InkWell(
@@ -93,75 +94,70 @@ class DeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: AppBar(
-        title: Text(deed.title),  //Don't need to worry about text overflow, handled already
-      ),
-      //drawer: GDDrawer(),
-      body: ListView(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.all(16.0),
-          ),
-          //ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
-          PictureCarouselWidget(imageUrls: deed.pictures, imageDimensions: 190.0,),
-          LayoutUtils.splitter(),
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.all(16.0),
+        ),
+        //ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
+        PictureCarouselWidget(imageUrls: deed.pictures, imageDimensions: 190.0,),
+        LayoutUtils.splitter(),
 
-          Row(
-            children: [
-              Text('Posted by: '),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                height: userProfileIconDimensions,
-                child: _buildPostersRow(),
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              Text('Didders: '),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                height: userProfileIconDimensions,
-                child: _buildDiddersRow(context: context),
-              ),
-            ],
-          ),
-
-          Row(
-            children: [
-              Text('Gotters: '),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 20.0),
-                height: userProfileIconDimensions,
-                child: _buildGottersRow(context: context),
-              ),
-            ],
-          ),
-
-
-          LayoutUtils.splitter(),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                deed.title,
-                style: _titleStyle,
-              ),
-            ],
-          ),
-          LayoutUtils.splitter(),
-          Padding(
-            padding: EdgeInsets.all(16.0),
-            child:Text(
-              deed.description,
-              style: _descriptionStyle,
+        Row(
+          children: [
+            Text('Posted by: '),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20.0),
+              height: userProfileIconDimensions,
+              child: _buildPostersRow(),
             ),
+          ],
+        ),
+
+        Row(
+          children: [
+            Text('Didders: '),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20.0),
+              height: userProfileIconDimensions,
+              child: _buildDiddersRow(context: context),
+            ),
+          ],
+        ),
+
+        Row(
+          children: [
+            Text('Gotters: '),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 20.0),
+              height: userProfileIconDimensions,
+              child: _buildGottersRow(context: context),
+            ),
+          ],
+        ),
+
+
+        LayoutUtils.splitter(),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              deed.title,
+              style: _titleStyle,
+            ),
+          ],
+        ),
+        LayoutUtils.splitter(),
+        Padding(
+          padding: EdgeInsets.all(16.0),
+          child:Text(
+            deed.description,
+            style: _descriptionStyle,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
+
 }

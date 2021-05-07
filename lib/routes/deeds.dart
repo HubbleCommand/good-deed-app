@@ -13,8 +13,8 @@ import 'package:latlong/latlong.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-
-import '../globals.dart';
+import 'package:good_deed/globals.dart';
+import 'package:good_deed/routes/deed.dart';
 
 class DeedsPage extends StatelessWidget {
   static const String routeName = '/deeds';
