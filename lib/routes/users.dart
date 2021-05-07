@@ -1,5 +1,6 @@
 //To search users / sign up
 import 'package:flutter/material.dart';
+import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/adds.dart';
 import 'package:good_deed/widgets/drawer.dart';
@@ -14,7 +15,7 @@ import 'package:latlong/latlong.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
-import '../globals.dart';
+import 'package:good_deed/globals.dart';
 
 class UsersPage extends StatelessWidget {
   static const String routeName = '/users';
