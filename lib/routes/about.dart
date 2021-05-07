@@ -13,14 +13,14 @@ import 'package:http/http.dart' as http;
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:package_info/package_info.dart';
 
-class SettingsPage extends StatelessWidget {
-  static const String routeName = '/settings';
+class AboutPage extends StatelessWidget {
+  static const String routeName = '/about';
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
         appBar: AppBar(
-          title: Text("Settings"),
+          title: Text("About Good Deed"),
         ),
         drawer: GDDrawer(),
         body: Column(

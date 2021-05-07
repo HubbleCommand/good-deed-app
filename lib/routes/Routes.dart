@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/routes/users.dart';
-import 'package:good_deed/widgets/account.dart';
-import 'package:good_deed/routes/settings.dart';
+import 'package:good_deed/routes/account.dart';
+import 'package:good_deed/routes/about.dart';
 import 'package:good_deed/routes/home.dart';
 import 'package:good_deed/routes/deeds.dart' as D;
 
@@ -10,7 +10,7 @@ class Routes {
   static const String home = MyHomePage.routeName;
   static const String users = UsersPage.routeName;
   static const String account = AccountPage.routeName;
-  static const String settings = SettingsPage.routeName;
+  static const String about = AboutPage.routeName;
   //static const String notes = NotesPage.routeName;
 
   /*var routes = {
@@ -27,6 +27,6 @@ class Routes {
     D.DeedsPage.routeName: (context) => D.DeedsPage(),
     UsersPage.routeName: (context) => UsersPage(),
     AccountPage.routeName: (context) => AccountPage(),
-    SettingsPage.routeName: (context) => SettingsPage(),
+    AboutPage.routeName: (context) => AboutPage(),
   };
 }
