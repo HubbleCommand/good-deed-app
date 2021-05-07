@@ -1,19 +1,16 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
-import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/utils/layout.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'dart:io';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
-import '../../../globals.dart';
-import '../user.dart';
+import 'package:good_deed/globals.dart';
+import 'package:good_deed/widgets/forms/user.dart';
 
 class NewDeedForm extends StatefulWidget {
   final User loggedInUser = Globals.mockedUser;

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/widgets/drawer.dart';
-//import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart';
 import 'package:deep_pick/deep_pick.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 class MyHomePage extends StatefulWidget {
   static const String routeName = "/home";

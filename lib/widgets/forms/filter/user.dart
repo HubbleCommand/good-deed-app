@@ -1,15 +1,9 @@
 import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:good_deed/models/filters/deed.dart';
-import 'package:good_deed/models/filters/location.dart';
 import 'package:good_deed/models/filters/user.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:latlong/latlong.dart';
 import 'package:http/http.dart' as http;
-import '../map_picker.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 class UserFilterScreen extends StatefulWidget {

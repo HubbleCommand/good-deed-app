@@ -4,14 +4,9 @@ import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/adds.dart';
 import 'package:good_deed/widgets/drawer.dart';
-import 'package:good_deed/widgets/views/user.dart';
 import 'package:http/http.dart' as http;
-
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
-//import 'file:///C:/Users/sasha/Documents/Projects/GoodDeed/good_deed_v2/lib/utils/globals.dart';
-import 'package:good_deed/utils/geo.dart';
-import 'package:latlong/latlong.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 

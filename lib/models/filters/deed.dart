@@ -1,7 +1,5 @@
-
 import 'package:latlong/latlong.dart';
-
-import '../user.dart';
+import 'package:good_deed/models/user.dart';
 
 class FilterDeed{
   List<User> posters = [];

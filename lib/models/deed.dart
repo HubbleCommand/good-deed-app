@@ -1,4 +1,3 @@
-
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:latlong/latlong.dart';

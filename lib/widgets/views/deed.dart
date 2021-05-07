@@ -4,7 +4,6 @@ import 'package:good_deed/models/user.dart';
 import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/picture_carousel.dart';
-import 'package:good_deed/widgets/views/user.dart';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 
 class DeedView extends StatelessWidget{

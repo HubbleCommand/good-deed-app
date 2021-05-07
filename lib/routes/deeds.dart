@@ -7,7 +7,6 @@ import 'package:good_deed/utils/geo.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/forms/filter/deed.dart';
 import 'package:good_deed/widgets/forms/posters/deed.dart';
-import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'package:good_deed/widgets/drawer.dart';

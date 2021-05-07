@@ -6,8 +6,8 @@ import 'package:good_deed/models/filters/location.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:latlong/latlong.dart';
-import '../map_picker.dart';
-import '../user_picker.dart';
+import 'package:good_deed/widgets/forms/map_picker.dart';
+import 'package:good_deed/widgets/forms/user_picker.dart';
 
 class DeedFilterScreen extends StatefulWidget {
   final FilterDeed filter;
