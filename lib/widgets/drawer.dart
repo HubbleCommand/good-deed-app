@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/routes/Routes.dart';
+import 'package:good_deed/widgets/buttons/button_logout.dart';
 
 class GDDrawer extends StatelessWidget {
   _pushRoute(context, route) {
@@ -12,29 +14,27 @@ class GDDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
-        // Important: Remove any padding from the ListView.
-        padding: EdgeInsets.zero,
+      child: Column(
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.fill,
                     image:  AssetImage('res/images/drawer_header_background.png')
                 ),
-            ),
-            child: Stack(children: <Widget>[
-              Positioned(
-                  bottom: 12.0,
-                  left: 16.0,
-                  child: Text("Good Deed",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.w500
-                    )
-                  )),
-            ])
+              ),
+              child: Stack(children: <Widget>[
+                Positioned(
+                    bottom: 12.0,
+                    left: 16.0,
+                    child: Text("Good Deed",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.w500
+                        )
+                    )),
+              ])
           ),
           ListTile(
             title: Text('Home'),
@@ -71,10 +71,10 @@ class GDDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text('Settings & About GD'),
+            title: Text('About Good Deed'),
             leading: Icon(Icons.settings),
             onTap: () {
-              _pushRoute(context, Routes.settings);
+              _pushRoute(context, Routes.about);
             },
           ),
         ],
