@@ -12,12 +12,12 @@ class UserView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
+    return Column(  //Using ListView can utterly fuck up with sizing when this widget is used as a child! WTF! Why can't ListView take the parent sizing?!
       children: <Widget>[
         Padding(
           padding: EdgeInsets.all(16.0),
         ),
-        ImageUtils.Image.buildIcon(user.avatarURL, 190.0, 190.0),
+        user.avatarURL == null ? Container() : ImageUtils.Image.buildIcon(user.avatarURL, 190.0, 190.0),
         LayoutUtils.splitter(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
