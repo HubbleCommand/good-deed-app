@@ -36,6 +36,8 @@ dependencies:
   shared_preferences: ^0.5.12+4
   url_launcher: ^5.7.10
 
+  image_picker: ^0.6.7+22 #Using newest version conflicts with http
+
   #For geo operations
   ##geotools: ^0.4.0
   ##maybe just use the following...
@@ -68,9 +70,19 @@ dependencies:
   firebase_database: ^4.1.1
   firebase_auth: ^0.18.1+2
 
+  # Social logins
+  #TODO implement login with the following three services!
+  google_sign_in: "^4.5.1"
+  #flutter_facebook_auth: "^1.0.0"
+  #flutter_twitter_login: ^1.1.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+# google_sign_in & google_mobile_ads incompatability fixed by the following https://github.com/FirebaseExtended/flutterfire/issues/3712 found with search https://github.com/FirebaseExtended/flutterfire/issues?q=Duplicate+class+com.google.common.util.concurrent.ListenableFuture+found+in
+dependency_overrides:
+  cloud_firestore: "0.14.0+2"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
