@@ -29,6 +29,7 @@ class GoodDeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       /*localizationsDelegates: [
         // ... app-specific localization delegate[s] here
         // TODO: uncomment the line below after codegen
