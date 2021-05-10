@@ -5,12 +5,15 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/models/deed.dart';
+import 'package:good_deed/widgets/forms/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'dart:io';
 import 'package:good_deed/utils/image.dart' as ImageUtils;
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/widgets/forms/user.dart';
+
+import '../user_picker.dart';
 
 class NewDeedForm extends StatefulWidget {
   final User loggedInUser = Globals.mockedUser;
@@ -52,6 +55,7 @@ class NewDeedFormState extends State<NewDeedForm> {
       'didders' : deed.didders,
       'time' : DateTime.now().millisecondsSinceEpoch, //0.toString(),
       'pictures' : deed.pictures
+      //'pictures' : json.encode(deed.pictures)
     };
 
     if(deed.location != null){
@@ -92,6 +96,31 @@ class NewDeedFormState extends State<NewDeedForm> {
       print(response.body);
       return false;
     }
+  }
+
+  Future<String> uploadImage(filename) async {
+    var request = http.MultipartRequest('POST', Uri.parse(Globals.backendURL + '/ftp/upload'));
+    request.files.add(await http.MultipartFile.fromPath('picture', filename));
+    var res = await request.send();
+    return res.stream.bytesToString();
+  }
+
+  Widget _buildUserAreaThingy({String displayText, List<User> users}){
+    return ElevatedButton(
+      onPressed: () async {
+        // Close the screen and return "Nope!" as the result.
+        final List<User> result = await Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UserPickerScreen(preSelectedUsers: users,)),
+        );
+        print("RETURNED");
+        //TODO fix, users = x doesn't work, not even in setState!
+        users.clear();
+        users.addAll(result);
+        print(users);
+      },
+      child: Text(displayText),
+    );
   }
 
   @override
@@ -192,7 +221,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                             }
                         ),
                       ),
-                      Text('Didders'),
+                      /*Text('Didders'),
                       Row(
                         children: [
                           Expanded(
@@ -268,7 +297,9 @@ class NewDeedFormState extends State<NewDeedForm> {
                               //return Text('A');
                             }
                         ),
-                      ),
+                      ),*/
+                      LayoutUtils.widenButton(_buildUserAreaThingy(displayText: 'Choose Didders', users: this.didders)),
+                      LayoutUtils.widenButton(_buildUserAreaThingy(displayText: 'Choose Gotters', users: this.gotters)),
                       LayoutUtils.widenButton(
                         ElevatedButton(
                           onPressed: () async {
@@ -287,6 +318,20 @@ class NewDeedFormState extends State<NewDeedForm> {
                             );
                           },
                           child: Text('Time Deed Occured'),
+                        ),
+                      ),
+                      LayoutUtils.widenButton(
+                        ElevatedButton(
+                          onPressed: () async {
+                            final List<File> result = await Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => ImagePickerFormWidget(pictures: this._pictures,)),
+                            );
+                            setState(() {
+                              this._pictures = result;
+                            });
+                          },
+                          child: Text('Select Images'),
                         ),
                       ),
                     ],
@@ -336,6 +381,18 @@ class NewDeedFormState extends State<NewDeedForm> {
 
                       _formKey.currentState.save();
 
+                      //First, we need to send the image to the server & get their URLs
+
+                      List<String> _resultingImages = [];
+                      for(File image in this._pictures){
+                        print(image);
+                        var res = await uploadImage(image.path);
+                        var body = json.decode(res)["url"];
+                        print(body);
+                        _resultingImages.add(Globals.backendURL + '/static/' + body);
+                        sleep(Duration(seconds: 3));  //TODO remove, this is here temporarily due to the static server in NodeJS resetting, and any following requests failing... (should work fine once using Wasabi)
+                      }
+
                       print('Title: ' + _title);
                       print('Description: ' + _description);
                       //print('Deeder: ' + _deederId.toString());
@@ -366,8 +423,10 @@ class NewDeedFormState extends State<NewDeedForm> {
                           location        : selectedPoint,
                           title           : _title,
                           description     : _description,
-                          pictures: ['https://picsum.photos/200']
+                          //pictures        : ['https://picsum.photos/200'],
+                          pictures        : _resultingImages,
                       );
+                      print(newDeed);
                       if(await createDeed(newDeed)) {
                         //Deed is created and can return to deeds
                         print('DID GOOD');
@@ -377,7 +436,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                       setState(() { //Hide submit button once is submitted, avoids spamming in the app
                         _isVisible = true;
                       });
-                      //Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: const Text('Cannot create deed, missing info'),
