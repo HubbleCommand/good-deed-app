@@ -77,6 +77,16 @@ class GDDrawer extends StatelessWidget {
               _pushRoute(context, Routes.about);
             },
           ),
+          Expanded( //Make login thing stick to bottom
+            child: Container(),
+          ),
+          FirebaseAuth.instance.currentUser != null ?
+          new LogoutButton()
+              :
+          Container(
+            padding: EdgeInsets.all(16.0),
+            child: Text('You are not logged in'),
+          ),
         ],
       ),
     );
