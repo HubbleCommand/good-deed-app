@@ -2,8 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:good_deed/main.dart';
-import 'package:good_deed/widgets/buttons/button_logout.dart';
 import 'package:good_deed/widgets/forms/login/email_login.dart';
 import 'package:good_deed/widgets/forms/signup/email_signup.dart';
 import 'package:good_deed/widgets/drawer.dart';
@@ -96,7 +94,4 @@ class _AccountPageState extends State<AccountPage> {
           )
     );
   }
-}
-
-class FacebookAuth {
 }
