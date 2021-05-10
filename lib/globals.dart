@@ -15,7 +15,7 @@ class Globals{
   //Mocked user's password: f@Xp4X=h5vB!4nN-
   static final mockedUser = new User(
       name: 'Mocked',
-      uuid: 'NwXtTpAd5VvWP8eo',
+      uuid: 'i2gu41TWaJXpVYtsGxbnsvLw45J3',
       avatarURL: 'https://www.clickz.com/wp-content/uploads/2016/03/anontumblr-300x271.png',
       story: "I am a mocked user. Don't mind me!"
       //home: new LatLng(40.68972222, 72.04444444), //Mocked User Location, statueOfLiberty
