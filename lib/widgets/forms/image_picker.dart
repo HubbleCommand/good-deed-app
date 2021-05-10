@@ -24,13 +24,6 @@ class _ImagePickerFormWidgetState extends State<ImagePickerFormWidget>{
     }
   }
 
-  Future<String> uploadImage(filename, url) async {
-    var request = http.MultipartRequest('POST', Uri.parse(url));
-    request.files.add(await http.MultipartFile.fromPath('picture', filename));
-    var res = await request.send();
-    return res.reasonPhrase;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +85,6 @@ class _ImagePickerFormWidgetState extends State<ImagePickerFormWidget>{
                 duration: const Duration(seconds: 3),
               ));
             } else {
-              //var res = await uploadImage(file.path, Globals.backendURL + '/ftp/upload');
               setState(() {
                 _pictures.add(file);
               });
