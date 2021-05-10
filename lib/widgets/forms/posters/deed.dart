@@ -9,11 +9,8 @@ import 'package:good_deed/widgets/forms/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'dart:io';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
 import 'package:good_deed/globals.dart';
-import 'package:good_deed/widgets/forms/user.dart';
-
-import '../user_picker.dart';
+import 'package:good_deed/widgets/forms/user_picker.dart';
 
 class NewDeedForm extends StatefulWidget {
   final User loggedInUser = Globals.mockedUser;
@@ -29,20 +26,14 @@ class NewDeedFormState extends State<NewDeedForm> {
   String _title;
   String _description;
   List<File> _pictures = [];
-  List<bool> _lSelected = [true, false];
   LatLng selectedPoint;
   int _occuredMS;
 
   List<User> didders = [];
   List<User> gotters = [];
 
-  User _otherUser;
-
   bool _isVisible = true;
 
-  //TODO upload any images for the deed
-
-  //Future<Deed> createDeed(String title) async {
   Future<bool> createDeed(Deed deed) async {
 
     Map<String, dynamic> vars = {
@@ -55,7 +46,6 @@ class NewDeedFormState extends State<NewDeedForm> {
       'didders' : deed.didders,
       'time' : DateTime.now().millisecondsSinceEpoch, //0.toString(),
       'pictures' : deed.pictures
-      //'pictures' : json.encode(deed.pictures)
     };
 
     if(deed.location != null){
@@ -70,23 +60,6 @@ class NewDeedFormState extends State<NewDeedForm> {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        /*body: jsonEncode(<String, dynamic>{
-        'title': deed.title,
-        'description' : deed.description,
-        //'doer: ' : deed.deeder.userId.toString(),
-        //'reciever: ' : deed.deeded.userId.toString(),
-        //'didders' : deed.didders.map((e) => e.uuid)
-        'poster'  : deed.poster,
-        //'didders' : jsonEncode(deed.didders.map((e) => e.uuid)),  //TODO or use .join of the Iterable<String> instead of jsonEncode
-        //'gotters' : '[' + deed.gotters.map((e) => e.uuid).join(', ') + ']',
-        //'gotters' : deed.gotters.map((e) => e.uuid),
-        'latitude' : deed.location.latitude,
-        'longitude' : deed.location.longitude,
-        'gotters' : deed.gotters,
-        'didders' : deed.didders,
-        'time' : DateTime.now().millisecondsSinceEpoch, //0.toString(),
-        'pictures' : deed.pictures
-      }),*/
         body: jsonEncode(vars)
     );
 
@@ -108,7 +81,6 @@ class NewDeedFormState extends State<NewDeedForm> {
   Widget _buildUserAreaThingy({String displayText, List<User> users}){
     return ElevatedButton(
       onPressed: () async {
-        // Close the screen and return "Nope!" as the result.
         final List<User> result = await Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => UserPickerScreen(preSelectedUsers: users,)),
@@ -130,22 +102,14 @@ class NewDeedFormState extends State<NewDeedForm> {
       height: 80,
       point: selectedPoint,
       builder: (ctx) => Container(
-        //child: FlutterLogo(),
         child: Icon(Icons.adjust),
       ),
     )];
 
     return new Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            Text("New Deed"),
-            //Padding(padding: EdgeInsets.all(5.0)),
-            Icon(Icons.add)
-          ],
-        ),
+        title: Text("New Deed"),
       ),
-      //drawer: GDDrawer(),
       body: Form(
         key: _formKey,
         child: Column(
@@ -156,31 +120,6 @@ class NewDeedFormState extends State<NewDeedForm> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      /*ToggleButtons(
-                        borderRadius: BorderRadius.circular((20)),
-                        children: <Widget>[
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Deeder'),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text('Deeded'),
-                          ),
-                        ],
-                        onPressed: (int index) {
-                          setState(() {
-                            for (int buttonIndex = 0; buttonIndex < _lSelected.length; buttonIndex++) {
-                              if (buttonIndex == index) {
-                                _lSelected[buttonIndex] = true;
-                              } else {
-                                _lSelected[buttonIndex] = false;
-                              }
-                            }
-                          });
-                        },
-                        isSelected: _lSelected,
-                      ),*/
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 16.0),
                         child: TextFormField(
@@ -221,83 +160,6 @@ class NewDeedFormState extends State<NewDeedForm> {
                             }
                         ),
                       ),
-                      /*Text('Didders'),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: new UserSelectorFormWidget(
-                                onUserSelectedCallback: (User selectedUser){
-                                  setState(() {
-                                    //Check that user doesn't already exist!
-
-                                    this.didders.add(selectedUser);
-                                  });
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 20.0),
-                        height: 30.0,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            scrollDirection: Axis.horizontal, //Makes list horizontal
-                            itemCount: this.didders.length,
-                            itemBuilder: (context, index){
-                              return Chip(
-                                label: Text(this.didders[index].name),
-                                avatar: ImageUtils.Image.buildIcon(this.didders[index].avatarURL, 25.0, 25.0), //TODO don't hard-code doubles
-                                onDeleted: (){
-                                  setState(() {
-                                    this.didders.removeAt(index);
-                                  });
-                                },
-                              );
-                              //return Text('A');
-                            }
-                        ),
-                      ),
-
-                      //Filter by Deeded
-                      Text('Gotters'),
-                      Row(
-                        children: [
-                          Expanded(
-                            child: new UserSelectorFormWidget(
-                                onUserSelectedCallback: (User selectedUser){
-                                  setState(() {
-                                    //Check that user doesn't already exist!
-                                    this.gotters.add(selectedUser);
-                                  });
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.symmetric(vertical: 20.0),
-                        height: 30.0,
-                        child: ListView.builder(
-                            shrinkWrap: true,
-                            physics: ClampingScrollPhysics(),
-                            scrollDirection: Axis.horizontal, //Makes list horizontal
-                            itemCount: this.gotters.length,
-                            itemBuilder: (context, index){
-                              return Chip(
-                                label: Text(this.gotters[index].name),
-                                avatar: ImageUtils.Image.buildIcon(this.gotters[index].avatarURL, 25.0, 25.0), //TODO don't hard-code doubles
-                                onDeleted: (){
-                                  setState(() {
-                                    this.gotters.removeAt(index);
-                                  });
-                                },
-                              );
-                              //return Text('A');
-                            }
-                        ),
-                      ),*/
                       LayoutUtils.widenButton(_buildUserAreaThingy(displayText: 'Choose Didders', users: this.didders)),
                       LayoutUtils.widenButton(_buildUserAreaThingy(displayText: 'Choose Gotters', users: this.gotters)),
                       LayoutUtils.widenButton(
@@ -306,14 +168,10 @@ class NewDeedFormState extends State<NewDeedForm> {
                             DatePicker.showDatePicker(
                               context,
                               showTitleActions: true,
-                              //minTime: DateTime(2018, 3, 5),
-                              /*maxTime: DateTime(2019, 6, 7), onChanged: (date) {
-                                print('change $date');
-                              },*/ onConfirm: (date) {
-                              print('confirm $date');
-                              _occuredMS = date.millisecondsSinceEpoch;
-                            },
-                              //currentTime: DateTime.now()
+                              onConfirm: (date) {
+                                print('confirm $date');
+                                _occuredMS = date.millisecondsSinceEpoch;
+                              },
                               currentTime: _occuredMS == null ? DateTime.now() : _occuredMS,
                             );
                           },
@@ -364,25 +222,14 @@ class NewDeedFormState extends State<NewDeedForm> {
                 ElevatedButton(
                   onPressed: /*_processing ? false :*/ () async {
                     print("BOO");
-                    // Validate returns true if the form is valid, or false otherwise.
-                    //if(_otherUser != null || _deeded != null){
-                    /*if(_otherUser == null){
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text('Select a user as a Deeder or Deeded!'),
-                        duration: const Duration(seconds: 3),
-                      ));
-                    }*/
-                    //if (_formKey.currentState.validate() && (_deeder != null || _deeded != null)) {
-                    //if (_formKey.currentState.validate() && _otherUser != null) {
                     if (_formKey.currentState.validate()) {
+                      _formKey.currentState.save();
+
                       setState(() { //Hide submit button once is submitted, avoids spamming in the app
                         //_isVisible = false;
                       });
 
-                      _formKey.currentState.save();
-
                       //First, we need to send the image to the server & get their URLs
-
                       List<String> _resultingImages = [];
                       for(File image in this._pictures){
                         print(image);
@@ -395,40 +242,19 @@ class NewDeedFormState extends State<NewDeedForm> {
 
                       print('Title: ' + _title);
                       print('Description: ' + _description);
-                      //print('Deeder: ' + _deederId.toString());
-                      //print('Deeded: ' + _deededId.toString());
-                      //print('Picture: ' + _picture);
-
-                      /*User locDeeder;
-                      User locDeeded;
-
-                      if(_lSelected[0]){
-                        locDeeder = _otherUser;
-                        locDeeded = widget.loggedInUser;
-                      } else {
-                        locDeeder = widget.loggedInUser;
-                        locDeeded = _otherUser;
-                      }*/
 
                       //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
                       Deed newDeed = new Deed(
-                        //deedId          : -1,
-                        //deeder          : locDeeder,
-                        //deeded          : locDeeded,
-                          poster: Globals.mockedUser,
-                          //didders : jsonEncode(deed.didders.map((e) => e.uuid)),
-                          //gotters : jsonEncode(deed.gotters.map((e) => e.uuid)),
-                          didders: this.didders,
-                          gotters: this.gotters,
+                          poster          : Globals.mockedUser,
+                          didders         : this.didders,
+                          gotters         : this.gotters,
                           location        : selectedPoint,
                           title           : _title,
                           description     : _description,
-                          //pictures        : ['https://picsum.photos/200'],
                           pictures        : _resultingImages,
                       );
                       print(newDeed);
                       if(await createDeed(newDeed)) {
-                        //Deed is created and can return to deeds
                         print('DID GOOD');
                       } else {
                         print('SHIT');
