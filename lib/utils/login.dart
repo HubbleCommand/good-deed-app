@@ -1,0 +1,5 @@
+class LoginHelper{
+  void registerToFirebase(){
+
+  }
+}

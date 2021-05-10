@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:good_deed/globals.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
@@ -138,7 +139,8 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
 Future<int> getDeedCount() async {
   var client = http.Client();
   DateTime now = new DateTime.now().subtract(new Duration(hours:24));
-  String uri = 'http://192.168.1.33:3000/deeds/count?after=${now.millisecondsSinceEpoch}';
+  //String uri = 'http://192.168.1.33:3000/deedsv2/count?after=${now.millisecondsSinceEpoch}';
+  String uri = Globals.backendURL + '/deedsv2/count?after=${now.millisecondsSinceEpoch}';
   var response = await client.get(uri);
   var body = convert.jsonDecode(response.body);
 
