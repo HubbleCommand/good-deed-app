@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Good Deed</string>
+    <string name="facebook_app_id">222593275878042</string>
+    <string name="fb_login_protocol_scheme">fb222593275878042</string>
+</resources>
