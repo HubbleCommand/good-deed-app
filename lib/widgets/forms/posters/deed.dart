@@ -11,9 +11,9 @@ import 'package:latlong/latlong.dart';
 import 'dart:io';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/widgets/forms/user_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart' as FBAuth;
 
 class NewDeedForm extends StatefulWidget {
-  final User loggedInUser = Globals.mockedUser;
 
   @override
   NewDeedFormState createState() {
@@ -56,7 +56,7 @@ class NewDeedFormState extends State<NewDeedForm> {
     }
 
     final response = await http.Client().post(
-        'http://192.168.1.33:3000/deedsv2',
+        Globals.backendURL + '/deedsv2',
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -231,21 +231,26 @@ class NewDeedFormState extends State<NewDeedForm> {
 
                       //First, we need to send the image to the server & get their URLs
                       List<String> _resultingImages = [];
-                      for(File image in this._pictures){
-                        print(image);
-                        var res = await uploadImage(image.path);
-                        var body = json.decode(res)["url"];
-                        print(body);
-                        _resultingImages.add(Globals.backendURL + '/static/' + body);
-                        sleep(Duration(seconds: 3));  //TODO remove, this is here temporarily due to the static server in NodeJS resetting, and any following requests failing... (should work fine once using Wasabi)
+                      if(this._pictures != null && this._pictures.isNotEmpty){
+                        for(File image in this._pictures){
+                          print(image);
+                          var res = await uploadImage(image.path);
+                          var body = json.decode(res)["url"];
+                          print(body);
+                          _resultingImages.add(Globals.backendURL + '/static/' + body);
+                          sleep(Duration(seconds: 3));  //TODO remove, this is here temporarily due to the static server in NodeJS resetting, and any following requests failing... (should work fine once using Wasabi)
+                        }
                       }
+
 
                       print('Title: ' + _title);
                       print('Description: ' + _description);
 
+                      FBAuth.User fbUser = FBAuth.FirebaseAuth.instance.currentUser;
                       //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
                       Deed newDeed = new Deed(
-                          poster          : Globals.mockedUser,
+                          //poster          : Globals.mockedUser,
+                          poster          : new User(name: fbUser.displayName, avatarURL: fbUser.photoURL, uuid: fbUser.uid),
                           didders         : this.didders,
                           gotters         : this.gotters,
                           location        : selectedPoint,
