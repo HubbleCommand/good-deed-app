@@ -4,7 +4,6 @@ import 'package:good_deed/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:intl/intl.dart';
-import 'package:deep_pick/deep_pick.dart';
 
 class MyHomePage extends StatefulWidget {
   static const String routeName = "/home";
@@ -139,13 +138,19 @@ class _DeedCountWidgetState extends State<DeedCountWidget> {
 Future<int> getDeedCount() async {
   var client = http.Client();
   DateTime now = new DateTime.now().subtract(new Duration(hours:24));
-  //String uri = 'http://192.168.1.33:3000/deedsv2/count?after=${now.millisecondsSinceEpoch}';
   String uri = Globals.backendURL + '/deedsv2/count?after=${now.millisecondsSinceEpoch}';
   var response = await client.get(uri);
   var body = convert.jsonDecode(response.body);
 
   //Ensures that if connection error between NodeJS and Neo4j, that loading spinner doesn't turn infinitely
-  int deedCount = (pick(body, 'error', 'code').asStringOrNull() == 'ServiceUnavailable') ? -1 : body['count'];
+  //int deedCount = (pick(body, 'error', 'code').asStringOrNull() == 'ServiceUnavailable') ? -1 : body['count'];
+  int deedCount = -1;
+  try{
+    deedCount = body['count'];
+  } on Exception {
+
+  }
+
   client.close();
 
   return deedCount;
