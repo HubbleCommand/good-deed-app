@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:http/http.dart' as http;
 import 'package:good_deed/utils/image.dart' as ImageUtils;
@@ -32,7 +33,7 @@ class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
 
   void _getUserSuggestions(String name){
     print("GETTING SUGGESTIONS");
-    String url = 'http://192.168.1.33:3000/users?name=' + name ;
+    String url = Globals.backendURL + Globals.beUserURI + '?' + name ;
 
     http.Client().get(url).then((value) {
       List<User> parsedUsers = _parseUsers(value.body);
