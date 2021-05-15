@@ -237,7 +237,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                           var res = await uploadImage(image.path);
                           var body = json.decode(res)["url"];
                           print(body);
-                          _resultingImages.add(Globals.backendURL + '/static/' + body);
+                          _resultingImages.add(Globals.backendURL + body);
                           sleep(Duration(seconds: 3));  //TODO remove, this is here temporarily due to the static server in NodeJS resetting, and any following requests failing... (should work fine once using Wasabi)
                         }
                       }
