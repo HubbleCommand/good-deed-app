@@ -47,14 +47,16 @@ class UsersList extends StatefulWidget {
 
 class UsersListState extends State<UsersList> {
   bool _hasMore;
-  int _pageNumber;
   bool _error;
   bool _loading;
-  final int _defaultDeedsPerPageCount = 10;
+  final int _defaultUsersPerPageCount = 10;
   final int _nextPageThreshold = 5;
-  List<User> futureDeeds2;
-  int timesFoundZeroDeeds = 0;
-  int timesFoundZeroDeedsThreshold = 5;
+  List<User> users;
+  int timesFoundZeroUsers = 0;
+  int timesFoundZeroUsersThreshold = 5;
+
+  String _searchName = "";
+  String _searchUUID = "";
 
   int _timeRequest;
 
@@ -64,19 +66,18 @@ class UsersListState extends State<UsersList> {
   void initState() {
     super.initState();
     _hasMore = true;
-    _pageNumber = 0;
     _error = false;
     _loading = true;
-    futureDeeds2 = [];
+    users = [];
 
-    _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+    _fetchUsers(_defaultUsersPerPageCount, _timeRequest);
 
     _scrollController.addListener(() {
       if (_scrollController.position.pixels ==
           _scrollController.position.maxScrollExtent) {
         //TODO also only fetch when there is search terms
         // ... call method to load more deeds
-        _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+        _fetchUsers(_defaultUsersPerPageCount, _timeRequest);
       }
     });
   }
@@ -87,29 +88,19 @@ class UsersListState extends State<UsersList> {
       body: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
+            TextFormField(
+              onChanged: (text){
+                setState(() {
+                  _searchName = text;
+                  users.clear();
+                });
+                if(text.isNotEmpty){
+                  _fetchUsers(_defaultUsersPerPageCount, _timeRequest);
+                }
+              },
+            ),
             Expanded(
               child: getBody(),
-            ),
-            SizedBox(
-              //To filter users, ONLY be name? Then just need one form thing above to put name & autocomplete
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  /*final FilterUser result = await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DeedFilterScreen(filter: this.deedFilter)),
-                  );
-                  print('RECIEVED');
-                  print(result.toUrlQuery());
-                  setState(() {
-                    this.futureDeeds2.clear();
-                    this.deedFilter = result;
-                    _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
-                  });*/
-                  // Respond to button press
-                },
-                child: Text('Filter'),
-              ),
             ),
           ]
       ),
@@ -118,7 +109,7 @@ class UsersListState extends State<UsersList> {
 
   Widget getBody() {
     print('BUILDING DEED LIST BODY');
-    if (futureDeeds2.isEmpty) {
+    if (users.isEmpty) {
       if (_loading) {
         return Center(
             child: Padding(
@@ -132,7 +123,7 @@ class UsersListState extends State<UsersList> {
                 setState(() {
                   _loading = true;
                   _error = false;
-                  _fetchDeeds(_defaultDeedsPerPageCount, _timeRequest);
+                  _fetchUsers(_defaultUsersPerPageCount, _timeRequest);
                 });
               },
               child: Padding(
@@ -148,13 +139,13 @@ class UsersListState extends State<UsersList> {
     } else {
       List<Widget> children = [];
 
-      for(int index = 0; index < futureDeeds2.length; index++){
+      for(int index = 0; index < users.length; index++){
         if(index % 10 == 0){
           children.add(new BannerAdWidget());
         }
-        children.add(new UserItem(futureDeeds2[index]));
+        children.add(new UserItem(users[index]));
         //If is last element, add ad widget
-        if(index == futureDeeds2.length - 1){
+        if(index == users.length - 1){
           children.add(new BannerAdWidget());
           children.add(LayoutUtils.listEndItemBuilder(message: 'No more users found!'));
         }
@@ -178,36 +169,34 @@ class UsersListState extends State<UsersList> {
     return calced;
   }
 
-  Future<void> _fetchDeeds(int limit, int before) async {
+  Future<void> _fetchUsers(int limit, int before) async {
     try {
       setState(() {
         _loading = true;
       });
 
-      int skip = (_pageNumber) * _defaultDeedsPerPageCount; //TODO needs to use the actual number of deeds!
-      skip = futureDeeds2.length;
+      int skip = users.length;
 
-      String url = Globals.backendURL + '/users?' ;
+      String url = Globals.backendURL + '/users?name=' + _searchName;
 
       url += skip != 0 ? '&start=$skip' : '';
       print(url);
       final response = await http.Client().get(url);
-      print('GOT DEEDS');
+      print('GOT USERS');
       List<User> parsedDeeds = _parseUsers(response.body);
       print('Number of users found: ' + parsedDeeds.length.toString());
 
       if(parsedDeeds.length == 0){
-        timesFoundZeroDeeds += 1;
+        timesFoundZeroUsers += 1;
       } else {
-        timesFoundZeroDeeds = 0;
+        timesFoundZeroUsers = 0;
       }
 
       setState(() {
         //_hasMore = parsedDeeds.length == _defaultPhotosPerPageCount; //THIS NEEDS TO BE CHANGED!!! It can keep requesting Deeds infinitely if there aren't enough!
         _hasMore = false;
         _loading = false;
-        _pageNumber = _pageNumber + 1;
-        futureDeeds2.addAll(parsedDeeds);
+        users.addAll(parsedDeeds);
       });
     } catch (e) {
       print(e);
