@@ -28,24 +28,22 @@ class NewDeedFormState extends State<NewDeedForm> {
   String _description;
   List<File> _pictures = [];
   LatLng selectedPoint;
-  int _occuredMS;
+  int _occuredMS = DateTime.now().millisecondsSinceEpoch;
 
   List<User> didders = [];
   List<User> gotters = [];
-
-  bool _isVisible = true;
 
   Future<bool> createDeed(Deed deed) async {
     Map<String, dynamic> vars = {
       'title': deed.title,
       'description' : deed.description,
-      'poster'  : deed.poster,
-      'latitude' : deed.location.latitude,
-      'longitude' : deed.location.longitude,
-      'gotters' : deed.gotters,
-      'didders' : deed.didders,
-      'time' : DateTime.now().millisecondsSinceEpoch, //0.toString(),
-      'pictures' : deed.pictures
+      'poster'      : deed.poster,
+      'latitude'    : deed.location.latitude,
+      'longitude'   : deed.location.longitude,
+      'gotters'     : deed.gotters,
+      'didders'     : deed.didders,
+      'time'        : deed.time,
+      'pictures'    : deed.pictures
     };
 
     if(deed.location != null){
@@ -197,7 +195,6 @@ class NewDeedFormState extends State<NewDeedForm> {
                 )
             ),
             Expanded(
-              //height: 500, //When using container
               flex: 3,
               child: FlutterMap(
                 options: MapOptions(
@@ -216,83 +213,59 @@ class NewDeedFormState extends State<NewDeedForm> {
                 ],
               ),
             ),
-            Visibility (
-              visible: _isVisible,
-              child: LayoutUtils.widenButton(
-                ElevatedButton(
-                  onPressed: /*_processing ? false :*/ () async {
-                    print("BOO");
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
+            LayoutUtils.widenButton(ElevatedButton(
+              onPressed: () async {
+                print("BOO");
+                if (_formKey.currentState.validate()) {
+                  _formKey.currentState.save();
 
-                      /*setState(() { //Hide submit button once is submitted, avoids spamming in the app
-                        _isVisible = false;
-                      });*/
+                  final overlay = LoadingOverlay.of(context);
+                  overlay.show();
 
-                      List<String> messages = [];
-                      if(this._pictures != null && this._pictures.isNotEmpty){
-                        for(File image in this._pictures){
-                          messages.add("Uploading picture : " + image.path);
-                        }
-                      }
-                      messages.add("Publishing deed");
-
-                      final overlay = LoadingOverlay.of(context);
-                      overlay.show();
-
-                      //First, we need to send the image to the server & get their URLs
-                      List<String> _resultingImages = [];
-                      if(this._pictures != null && this._pictures.isNotEmpty){
-                        for(File image in this._pictures){
-                          print(image);
-                          var res = await uploadImage(image.path);
-                          var body = json.decode(res)["url"];
-                          print(body);
-                          _resultingImages.add(Globals.backendURL + body);
-                        }
-                      }
-
-                      print('Title: ' + _title);
-                      print('Description: ' + _description);
-
-                      FBAuth.User fbUser = FBAuth.FirebaseAuth.instance.currentUser;
-                      //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
-                      Deed newDeed = new Deed(
-                          //poster          : Globals.mockedUser,
-                          poster          : new User(name: fbUser.displayName, avatarURL: fbUser.photoURL, uuid: fbUser.uid),
-                          didders         : this.didders,
-                          gotters         : this.gotters,
-                          location        : selectedPoint,
-                          title           : _title,
-                          description     : _description,
-                          pictures        : _resultingImages,
-                      );
-                      print(newDeed);
-                      if(await createDeed(newDeed)) {
-                        print('DID GOOD');
-                      } else {
-                        print('SHIT');
-                      }
-                      setState(() { //Hide submit button once is submitted, avoids spamming in the app
-                        _isVisible = true;
-                      });
-                      overlay.hide();
-                      Navigator.of(context).pop();
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: const Text('Cannot create deed, missing info'),
-                        duration: const Duration(seconds: 3),
-                      ));
+                  //First, we need to send the image to the server & get their URLs
+                  List<String> _resultingImages = [];
+                  if(this._pictures != null && this._pictures.isNotEmpty){
+                    for(File image in this._pictures){
+                      print(image);
+                      var res = await uploadImage(image.path);
+                      var body = json.decode(res)["url"];
+                      print(body);
+                      _resultingImages.add(Globals.backendURL + body);
                     }
-                  },
-                  child: Text('Submit'),
-                ),
-              ),
-            ),
+                  }
+
+                  FBAuth.User fbUser = FBAuth.FirebaseAuth.instance.currentUser;
+                  //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
+                  Deed newDeed = new Deed(
+                    poster          : new User(name: fbUser.displayName, avatarURL: fbUser.photoURL, uuid: fbUser.uid),
+                    didders         : this.didders,
+                    gotters         : this.gotters,
+                    location        : selectedPoint,
+                    title           : _title,
+                    description     : _description,
+                    pictures        : _resultingImages,
+                    time            : _occuredMS
+                  );
+                  print(newDeed);
+                  if(await createDeed(newDeed)) {
+                    print('DID GOOD');
+                  } else {
+                    print('SHIT');
+                  }
+                  overlay.hide();
+                  Navigator.of(context).pop();
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text('Cannot create deed, missing info'),
+                    duration: const Duration(seconds: 3),
+                  ));
+                }
+              },
+              child: Text('Submit'),
+            ),),
           ],
         ),
       ),
-      //)
     );
   }
 }
