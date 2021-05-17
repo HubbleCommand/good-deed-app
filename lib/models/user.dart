@@ -7,7 +7,7 @@ class User {
   final String avatarURL;    //Profile pic
   final String story;     //Quick intro to the user
 
-  User({this.uuid = 'abc', @required this.name, @required this.contact, @required this.avatarURL, @required this.story});
+  User({@required this.uuid, @required this.name, this.contact = "", @required this.avatarURL, @required this.story});
 
   @override
   String toString() {
