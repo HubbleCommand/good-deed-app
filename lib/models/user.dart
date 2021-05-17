@@ -7,16 +7,12 @@ class User {
   final String avatarURL;    //Profile pic
   final String story;     //Quick intro to the user
 
-  User({@required this.uuid, @required this.name, this.contact = "", @required this.avatarURL, @required this.story});
+  User({@required this.uuid, @required this.name, @required this.avatarURL, this.contact = "",  this.story = ""});
 
   @override
   String toString() {
     return 'User: {name: $name, id: $uuid}';
   }
-
-  /*String toJson() {
-    return '$uuid';
-  }*/
 
   Map<String, dynamic> toJson(){
     return {
