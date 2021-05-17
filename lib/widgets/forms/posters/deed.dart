@@ -6,6 +6,7 @@ import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/widgets/forms/image_picker.dart';
+import 'package:good_deed/widgets/loading_overlay.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'dart:io';
@@ -35,7 +36,6 @@ class NewDeedFormState extends State<NewDeedForm> {
   bool _isVisible = true;
 
   Future<bool> createDeed(Deed deed) async {
-
     Map<String, dynamic> vars = {
       'title': deed.title,
       'description' : deed.description,
@@ -225,9 +225,20 @@ class NewDeedFormState extends State<NewDeedForm> {
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
 
-                      setState(() { //Hide submit button once is submitted, avoids spamming in the app
-                        //_isVisible = false;
-                      });
+                      /*setState(() { //Hide submit button once is submitted, avoids spamming in the app
+                        _isVisible = false;
+                      });*/
+
+                      List<String> messages = [];
+                      if(this._pictures != null && this._pictures.isNotEmpty){
+                        for(File image in this._pictures){
+                          messages.add("Uploading picture : " + image.path);
+                        }
+                      }
+                      messages.add("Publishing deed");
+
+                      final overlay = LoadingOverlay.of(context);
+                      overlay.show();
 
                       //First, we need to send the image to the server & get their URLs
                       List<String> _resultingImages = [];
@@ -238,10 +249,8 @@ class NewDeedFormState extends State<NewDeedForm> {
                           var body = json.decode(res)["url"];
                           print(body);
                           _resultingImages.add(Globals.backendURL + body);
-                          sleep(Duration(seconds: 3));  //TODO remove, this is here temporarily due to the static server in NodeJS resetting, and any following requests failing... (should work fine once using Wasabi)
                         }
                       }
-
 
                       print('Title: ' + _title);
                       print('Description: ' + _description);
@@ -267,6 +276,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                       setState(() { //Hide submit button once is submitted, avoids spamming in the app
                         _isVisible = true;
                       });
+                      overlay.hide();
                       Navigator.of(context).pop();
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
