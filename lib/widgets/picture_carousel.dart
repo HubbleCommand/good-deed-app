@@ -1,9 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/models/user.dart';
-import 'package:good_deed/utils/layout.dart';
-import 'package:good_deed/widgets/views/user.dart';
-import 'package:good_deed/utils/image.dart';
 
 class PictureCarouselWidget extends StatelessWidget {
   final List<String> imageUrls;
@@ -24,7 +19,6 @@ class PictureCarouselWidget extends StatelessWidget {
               scrollDirection: Axis.horizontal, //Makes list horizontal
               itemCount: this.imageUrls.length,
               itemBuilder: (context, index) {
-                //return ImageUtils.Image.buildIcon(this.imageUrls[index], imageDimensions, imageDimensions);
                 return Container(
                   width: imageDimensions,
                   height: imageDimensions,
