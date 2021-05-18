@@ -1,3 +1,4 @@
+import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:latlong/latlong.dart';
@@ -11,10 +12,23 @@ class Deed {
   final int time;
   final String title;
   final String description;
-  final List<String> pictures;
+  List<String> pictures;
+
+  List<String> _sanitizePictures(List<String> pictures){
+    for(var i = 0; i < pictures.length; i++) {
+      if(pictures[i].startsWith("http")){
+        //return Image.network(id);
+      } else {
+        pictures[i] = Globals.wasabiEndpoint + pictures[i];
+      }
+    }
+    return pictures;
+  }
 
   //Deed({ this.deedId, this.deeder, this.deeded, this.location, this.time, this.title, this.description, this.pictures });
-  Deed({ this.uuid, this.poster, this.didders, this.gotters, this.location, this.time, this.title, this.description, this.pictures });
+  Deed({ this.uuid, this.poster, this.didders, this.gotters, this.location, this.time, this.title, this.description, List<String> pictures }){
+    this.pictures = _sanitizePictures(pictures);
+  }
 
   factory Deed.fromJson(Map<String, dynamic> json) {
 
