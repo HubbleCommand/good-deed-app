@@ -4,7 +4,7 @@ import 'package:good_deed/models/user.dart';
 import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/picture_carousel.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 
 class DeedView extends StatelessWidget{
   final _titleStyle = TextStyle(fontSize: 35.0);
@@ -29,7 +29,7 @@ class DeedView extends StatelessWidget{
           ImageUtils.Image.buildIcon(user.avatarURL, 75.0, 75.0),
         ],
       ),*/
-      child: ImageUtils.Image.buildIcon(user.avatarURL, 75.0, 75.0),
+      child: ImageUtil.buildIcon(user.avatarURL, 75.0, 75.0),
     );
   }
 
@@ -50,7 +50,7 @@ class DeedView extends StatelessWidget{
     print(deed.poster);
     if(deed.poster != null && deed.poster.avatarURL.isNotEmpty){
       //return _buildListThingy(deed.poster);
-      return ImageUtils.Image.buildIcon(deed.poster.avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+      return ImageUtil.buildIcon(deed.poster.avatarURL, userProfileIconDimensions, userProfileIconDimensions);
     } else {
       return Container();
     }

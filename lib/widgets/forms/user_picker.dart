@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 
 //Uses this pattern (sorta like callback, but between pages https://flutter.dev/docs/cookbook/navigation/returning-data
 class UserPickerScreen extends StatefulWidget {
@@ -90,7 +90,7 @@ class _UserPickerScreenState extends State<UserPickerScreen> {
                       itemBuilder: (context, index){
                         return Chip(
                           label: Text(selectedUsers[index].name),
-                          avatar: selectedUsers[index].avatarURL == null ? null : ImageUtils.Image.buildIcon(selectedUsers[index].avatarURL, 25.0, 25.0), //TODO don't hard-code doubles
+                          avatar: selectedUsers[index].avatarURL == null ? null : ImageUtil.buildIcon(selectedUsers[index].avatarURL, 25.0, 25.0), //TODO don't hard-code doubles
                           onDeleted: (){
                             setState(() {
                               selectedUsers.removeAt(index);
@@ -122,7 +122,7 @@ class _UserPickerScreenState extends State<UserPickerScreen> {
                       final User option = _userSuggestions.elementAt(index);
                       return ListTile(
                         title: Text(option.name, style: const TextStyle(color: Colors.black)),
-                        trailing: ImageUtils.Image.buildIcon(option.avatarURL, 36.0, 36.0),
+                        trailing: ImageUtil.buildIcon(option.avatarURL, 36.0, 36.0),
                         onTap: (){
                           if(!_checkIfUserExists(option, selectedUsers)){
                             setState(() {

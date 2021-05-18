@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:http/http.dart' as http;
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 
 //Reusable user selector widget
 class UserSelectorFormWidget extends StatefulWidget {
@@ -87,7 +87,7 @@ class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
                     },
                     child: ListTile(
                       title: Text(option.name, style: const TextStyle(color: Colors.black)),
-                      trailing: ImageUtils.Image.buildIcon(option.avatarURL, 36.0, 36.0),
+                      trailing: ImageUtil.buildIcon(option.avatarURL, 36.0, 36.0),
                     ),
                   ),
                 );

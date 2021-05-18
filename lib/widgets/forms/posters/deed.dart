@@ -228,9 +228,9 @@ class NewDeedFormState extends State<NewDeedForm> {
                     for(File image in this._pictures){
                       print(image);
                       var res = await uploadImage(image.path);
-                      var body = json.decode(res)["url"];
+                      var body = json.decode(res)["uid"];
                       print(body);
-                      _resultingImages.add(Globals.backendURL + body);
+                      _resultingImages.add(body);//_resultingImages.add(Globals.backendURL + body);
                     }
                   }
 

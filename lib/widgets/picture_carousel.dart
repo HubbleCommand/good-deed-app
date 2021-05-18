@@ -3,7 +3,7 @@ import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/views/user.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 
 class PictureCarouselWidget extends StatelessWidget {
   final List<String> imageUrls;

@@ -8,7 +8,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:good_deed/models/user.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 
 import 'package:good_deed/globals.dart';
 
@@ -220,7 +220,7 @@ class UserItem extends StatelessWidget {
         _user.name.length > 20 ? _user.name.substring(0, 19) + '...' : _user.name,
         style: _biggerFont,
       ),
-      trailing: ImageUtils.Image.buildIcon(_user.avatarURL, 36.0, 36.0),
+      trailing: ImageUtil.buildIcon(_user.avatarURL, 36.0, 36.0),
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: _user)));
       },

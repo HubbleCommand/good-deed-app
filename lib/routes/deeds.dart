@@ -11,7 +11,7 @@ import 'package:http/http.dart' as http;
 import 'package:latlong/latlong.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/routes/deed.dart';
 
@@ -180,7 +180,11 @@ class DeedsListState extends State<DeedsList> {
                 return _buildLoadingIndicator();
               }
             }
-            return DeedItem(futureDeeds2[index]);
+            LatLng location;
+            if(this.deedFilter != null){
+              location = this.deedFilter.location != null ? this.deedFilter.location : null;
+            }
+            return DeedItem(futureDeeds2[index], userLocation: location,);
           }
       );
     }
@@ -266,10 +270,10 @@ class DeedsListState extends State<DeedsList> {
 }
 
 class DeedItem extends StatelessWidget {
-  DeedItem(this._deed);
+  DeedItem(this._deed, {this.userLocation = null});
   final Deed _deed;
   //final LatLng userLocation = Globals.mockedHome;  //TODO get actual location if available
-  final LatLng userLocation = null;
+  final LatLng userLocation;
   final _biggerFont = TextStyle(fontSize: 18.0);
 
   @override
@@ -304,7 +308,7 @@ class DeedItem extends StatelessWidget {
         _deed.description.length > 30 ? _deed.description.substring(0, 29) + '...' : _deed.description,
       ),
       trailing: (_deed.pictures != null && _deed.pictures.length > 0) ? Container(
-        child: ImageUtils.Image.buildIcon(_deed.pictures.first, 36.0, 36.0),
+        child: ImageUtil.buildIcon(_deed.pictures.first, 36.0, 36.0),
       ) : null,
       onTap: () {
         Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed)));

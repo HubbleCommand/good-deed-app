@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:good_deed/utils/image.dart' as ImageUtils;
+import 'package:good_deed/utils/image.dart';
 import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/routes/deeds.dart';
@@ -26,7 +26,7 @@ class UserView extends StatelessWidget{
         Padding(
           padding: EdgeInsets.all(16.0),
         ),
-        user.avatarURL == null ? Container() : ImageUtils.Image.buildIcon(user.avatarURL, 190.0, 190.0),
+        user.avatarURL == null ? Container() : ImageUtil.buildIcon(user.avatarURL, 190.0, 190.0),
         LayoutUtils.splitter(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
