@@ -1,9 +1,11 @@
 ///Holds global values
 
 import 'package:flutter/material.dart';
+import 'package:good_deed/secrets/wasabi.dart';
 import 'package:latlong/latlong.dart';
 
 import 'package:good_deed/models/user.dart';
+import 'package:sigv4/sigv4.dart';
 
 //https://stackoverflow.com/questions/55243106/dart-nested-classes-how-to-access-child-class-variables
 class Globals{
@@ -27,6 +29,15 @@ class Globals{
   static final mockedHome = new LatLng(40.68972222, 72.04444444); //Mocked User Location, statueOfLiberty
 
   static _Styles styles = _Styles();
+
+  static final wasabiEndpoint = WasabiSecrets.endpoint;
+
+  static var wasabiClient = Sigv4Client(
+    keyId: WasabiSecrets.keyId,
+    accessKey: WasabiSecrets.accessKey,
+    region: 'eu-central-1',
+    serviceName: 's3',
+  );  //TODO use some form of Auth for image access! Works fine from server, but Sigv4 doesn't seem to work anymore!
 }
 
 class _Styles{
