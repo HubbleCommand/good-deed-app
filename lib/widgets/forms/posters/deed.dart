@@ -221,39 +221,46 @@ class NewDeedFormState extends State<NewDeedForm> {
 
                   final overlay = LoadingOverlay.of(context);
                   overlay.show();
-
-                  //First, we need to send the image to the server & get their URLs
-                  List<String> _resultingImages = [];
-                  if(this._pictures != null && this._pictures.isNotEmpty){
-                    for(File image in this._pictures){
-                      print(image);
-                      var res = await uploadImage(image.path);
-                      var body = json.decode(res)["uid"];
-                      print(body);
-                      _resultingImages.add(body);//_resultingImages.add(Globals.backendURL + body);
+                  try {
+                    //First, we need to send the image to the server & get their URLs
+                    List<String> _resultingImages = [];
+                    if(this._pictures != null && this._pictures.isNotEmpty){
+                      for(File image in this._pictures){
+                        print(image);
+                        var res = await uploadImage(image.path);
+                        var body = json.decode(res)["uid"];
+                        print(body);
+                        _resultingImages.add(body);//_resultingImages.add(Globals.backendURL + body);
+                      }
                     }
-                  }
 
-                  FBAuth.User fbUser = FBAuth.FirebaseAuth.instance.currentUser;
-                  //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
-                  Deed newDeed = new Deed(
-                    poster          : new User(name: fbUser.displayName, avatarURL: fbUser.photoURL, uuid: fbUser.uid),
-                    didders         : this.didders,
-                    gotters         : this.gotters,
-                    location        : selectedPoint,
-                    title           : _title,
-                    description     : _description,
-                    pictures        : _resultingImages,
-                    time            : _occuredMS
-                  );
-                  print(newDeed);
-                  if(await createDeed(newDeed)) {
-                    print('DID GOOD');
-                  } else {
-                    print('SHIT');
+                    FBAuth.User fbUser = FBAuth.FirebaseAuth.instance.currentUser;
+                    //Can now post data : https://flutter.dev/docs/cookbook/networking/send-data
+                    Deed newDeed = new Deed(
+                        poster          : new User(name: fbUser.displayName, avatarURL: fbUser.photoURL, uuid: fbUser.uid),
+                        didders         : this.didders,
+                        gotters         : this.gotters,
+                        location        : selectedPoint,
+                        title           : _title,
+                        description     : _description,
+                        pictures        : _resultingImages,
+                        time            : _occuredMS
+                    );
+                    print(newDeed);
+                    if(await createDeed(newDeed)) {
+                      print('DID GOOD');
+                    } else {
+                      print('SHIT');
+                    }
+                    overlay.hide();
+                    Navigator.of(context).pop();
+                  } catch (e) {
+                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                      content: const Text('Error creating deed!'),
+                      duration: const Duration(seconds: 3),
+                    ));
+                    overlay.hide();
                   }
-                  overlay.hide();
-                  Navigator.of(context).pop();
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: const Text('Cannot create deed, missing info'),
