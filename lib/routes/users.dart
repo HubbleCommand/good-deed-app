@@ -9,7 +9,6 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/image.dart';
-
 import 'package:good_deed/globals.dart';
 
 class UsersPage extends StatelessWidget {
