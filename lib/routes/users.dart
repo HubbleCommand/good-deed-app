@@ -107,7 +107,7 @@ class UsersListState extends State<UsersList> {
   }
 
   Widget getBody() {
-    print('BUILDING DEED LIST BODY');
+    print('BUILDING USERS LIST BODY');
     if (users.isEmpty) {
       if (_loading) {
         return Center(
@@ -127,12 +127,12 @@ class UsersListState extends State<UsersList> {
               },
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text("Error loading deeds, tap to try again"),
+                child: Text("Error loading users, tap to try again"),
               ),
             ));
       } else {
         return Center(
-          child: Text('No Deeds matching your criteria!'),
+          child: Text('No Users matching your criteria!'),
         );
       }
     } else {
@@ -174,7 +174,7 @@ class UsersListState extends State<UsersList> {
         _loading = true;
       });
 
-      int skip = users.length;
+      int skip = this.users.length;
 
       String url = Globals.backendURL + '/users?name=' + _searchName;
 
