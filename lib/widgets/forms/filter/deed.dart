@@ -32,7 +32,6 @@ class _DeedFilterScreenState extends State<DeedFilterScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if(this.filter == null){
       filter = new FilterDeed(didders: [], gotters: [], posters: []);
