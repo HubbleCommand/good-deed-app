@@ -1,10 +1,3 @@
-/*
-  TODO
-  - Privacy Policy
-  - App Version
-  - App Description
- */
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/widgets/privacy.dart';
