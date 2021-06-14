@@ -1,13 +1,17 @@
+import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:good_deed/widgets/forms/login/email_login.dart';
-import 'package:good_deed/widgets/forms/signup/email_signup.dart';
 import 'package:good_deed/widgets/drawer.dart';
+import 'package:good_deed/widgets/forms/account/email_login.dart';
+import 'package:good_deed/widgets/forms/account/email_signup.dart';
 import 'package:good_deed/widgets/views/account.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:http/http.dart' as http;
+import 'package:good_deed/globals.dart';
+import 'dart:io';
 
 //TODO put this all in settings?
 
@@ -43,7 +47,42 @@ class _AccountPageState extends State<AccountPage> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
+      final response = await http.Client().post(
+          Globals.backendURL + Globals.beUserURI + '/login',
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode({"uuid":userCredential.user.uid})
+      );
 
+      //if(jsonDecode(response.body)["new"] != null){
+      if(true){
+        return showDialog(
+          context: context,
+          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Welcome to Good Deed!'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text('We see that this is the first time you log into Good Deed. \n'),
+                    Text('We hope you enjoy using our app!'),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: const Text('Approve'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
 
       setState(() {
         _loggedIn = userCredential == null ? false : true;
@@ -78,35 +117,18 @@ class _AccountPageState extends State<AccountPage> {
                 Text('You are not logged in. Please sign in'),
                 _buildButton(button: Buttons.Facebook, onPressed: () async {
                   final AccessToken result = await FacebookAuth.instance.login();
-
-                  // Create a credential from the access token
-                  final facebookAuthCredential = FacebookAuthProvider.credential(result.token);
-
-                  // Once signed in, return the UserCredential
-                  //return await FirebaseAuth.instance.signInWithCredential(facebookAuthCredential);
+                  final facebookAuthCredential = FacebookAuthProvider.credential(result.token); // Create a credential from the access token
                   _login(facebookAuthCredential);
                 }),
                 _buildButton(button: Buttons.Google, onPressed: () async {
                   final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-
-                  // Obtain the auth details from the request
-                  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
-
-                  // Create a new credential
-                  final credential = GoogleAuthProvider.credential(
+                  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;  // Obtain the auth details from the request
+                  final credential = GoogleAuthProvider.credential( // Create a new credential
                     accessToken: googleAuth.accessToken,
                     idToken: googleAuth.idToken,
                   );
 
                   _login(credential);
-                  /*
-                  // Once signed in, return the UserCredential
-                  UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-
-                  setState(() {
-                    _loggedIn = userCredential == null ? false : true;
-                  });*/
-                  //TODO make sure that the account exists in the DB!
                 }),
                 _buildButton(button: Buttons.Email, onPressed: () async {
                   bool success = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailLogIn()));
