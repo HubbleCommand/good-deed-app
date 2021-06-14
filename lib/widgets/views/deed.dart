@@ -48,11 +48,14 @@ class DeedView extends StatelessWidget{
 
   Widget _buildPostersRow({BuildContext context}){
     print(deed.poster);
-    if(deed.poster != null && deed.poster.avatarURL.isNotEmpty){
+    if(deed.poster != null && deed.poster.avatarURL != null && deed.poster.avatarURL.isNotEmpty){
       //return _buildListThingy(deed.poster);
       return ImageUtil.buildIcon(deed.poster.avatarURL, userProfileIconDimensions, userProfileIconDimensions);
     } else {
-      return Container();
+      //return Container();
+      return ImageUtil.buildIcon(
+          "https://www.clickz.com/wp-content/uploads/2016/03/anontumblr-300x271.png",
+          userProfileIconDimensions, userProfileIconDimensions);
     }
   }
 
