@@ -46,10 +46,13 @@ class NewDeedFormState extends State<NewDeedForm> {
       'pictures'    : deed.pictures
     };
 
+    FBAuth.IdTokenResult userAuthed = await FBAuth.FirebaseAuth.instance.currentUser.getIdTokenResult();
+
     if(deed.location != null){
       if(deed.location.latitude != null && deed.location.longitude != null){
         vars['latitude'] = deed.location.latitude;
         vars['longitude'] = deed.location.longitude;
+        vars['token'] = userAuthed.token;
       }
     }
 
@@ -70,7 +73,11 @@ class NewDeedFormState extends State<NewDeedForm> {
   }
 
   Future<String> uploadImage(filename) async {
-    var request = http.MultipartRequest('POST', Uri.parse(Globals.backendURL + '/ftp/upload'));
+    FBAuth.IdTokenResult userAuthed = await FBAuth.FirebaseAuth.instance.currentUser.getIdTokenResult();
+
+    var request = http.MultipartRequest('POST', Uri.parse(Globals.backendURL + '/ftp/upload'))
+      ..fields["token"] = userAuthed.token
+    ;
     request.files.add(await http.MultipartFile.fromPath('picture', filename));
     var res = await request.send();
     return res.stream.bytesToString();
