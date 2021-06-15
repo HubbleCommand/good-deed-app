@@ -54,7 +54,7 @@ class _AccountPageState extends State<AccountPage> {
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode({"uuid":userCredential.user.uid, "token": userAuthed.token})
+          body: jsonEncode({"uuid":userCredential.user.uid, "token": userAuthed.token, "name": userCredential.user.displayName})
       );
 
       if(jsonDecode(response.body)["uuid"] != null){
