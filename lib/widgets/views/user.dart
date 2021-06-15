@@ -28,6 +28,8 @@ class UserView extends StatelessWidget{
         ),
         user.avatarURL == null ? Container() : ImageUtil.buildIcon(user.avatarURL, 190.0, 190.0),
         LayoutUtils.splitter(),
+        this.user.story == null ? Container() : Text(this.user.story),
+        LayoutUtils.splitter(),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
@@ -53,7 +55,6 @@ class UserView extends StatelessWidget{
                 Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedsPage(filterDeed: new FilterDeed(posters: [this.user]),)));
               }
             ),
-            this.user.story == null ? Container() : Text(this.user.story)
           ],
         ),
       ],
