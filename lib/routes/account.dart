@@ -47,19 +47,43 @@ class _AccountPageState extends State<AccountPage> {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
 
+      IdTokenResult userAuthed = await FirebaseAuth.instance.currentUser.getIdTokenResult();
+
       final response = await http.Client().post(
           Globals.backendURL + Globals.beUserURI + '/login',
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode({"uuid":userCredential.user.uid})
+          body: jsonEncode({"uuid":userCredential.user.uid, "token": userAuthed.token})
       );
 
-      //if(jsonDecode(response.body)["new"] != null){
-      if(true){
+      if(jsonDecode(response.body)["uuid"] != null){
+        setState(() {
+          _loggedIn = userCredential == null ? false : true;
+        });
+      } else {
+        await FirebaseAuth.instance.signOut();
         return showDialog(
           context: context,
-          barrierDismissible: false, // user must tap button!
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: const Text('Problem Signing you in'),
+              content: SingleChildScrollView(
+                child: ListBody(
+                  children: const <Widget>[
+                    Text('We seem to have encountered a problem while signing you in. \n'),
+                    Text('Please try again later.'),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      }
+
+      if(jsonDecode(response.body)["new"] != null){
+        return showDialog(
+          context: context,
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Welcome to Good Deed!'),
@@ -71,22 +95,11 @@ class _AccountPageState extends State<AccountPage> {
                   ],
                 ),
               ),
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('Approve'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
             );
           },
         );
       }
 
-      setState(() {
-        _loggedIn = userCredential == null ? false : true;
-      });
     } on FirebaseException catch (e)  {
       //TODO handle code 186 duplicate user (when loggin in with Facebook for example)
       print(e.code);
