@@ -26,6 +26,8 @@ class UserView extends StatelessWidget{
         Padding(
           padding: EdgeInsets.all(16.0),
         ),
+        this.user.name == null ? Container() : Text(this.user.name, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 40,),),
+        LayoutUtils.splitter(),
         user.avatarURL == null ? Container() : ImageUtil.buildIcon(user.avatarURL, 190.0, 190.0),
         LayoutUtils.splitter(),
         this.user.story == null ? Container() : Text(this.user.story),
