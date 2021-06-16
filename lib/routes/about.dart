@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:good_deed/widgets/privacy.dart';
-import 'package:good_deed/widgets/about.dart';
 import 'package:http/http.dart' as http;
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:package_info/package_info.dart';
@@ -16,8 +15,9 @@ class AboutPage extends StatelessWidget {
           title: Text("About Good Deed"),
         ),
         drawer: GDDrawer(),
-        body: Column(
+        body: SingleChildScrollView(child: Column(
           children: [
+            VersionWidget(),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -32,7 +32,7 @@ class AboutPage extends StatelessWidget {
                 child: Text('Privacy Overview'),
               ),
             ),
-            SizedBox(
+            /*SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
@@ -45,10 +45,15 @@ class AboutPage extends StatelessWidget {
                 },
                 child: Text('About Good Deed'),
               ),
-            ),
-            VersionWidget()
+            ),*/
+
+            Text("""Good Deed is a positive app. It's goal is to allow people to see all the good things that people do across the world, through all of the hateful news.\n"""),
+            Text("""To accomplish this, people signed up to the platform and anonymous users can create Posts about any good deed they did, or that has happened in their community.\n"""),
+            Text("""Those who are signed up can also create Deeds, which are special posts between two or more users, that show directly the users involved, including who did and who recieved the good deed.\n"""),
+            Text("""People signed up to the platform, and anonymous users, can then search through the good actions (Posts and Deeds) that have been done by other users.\n\n"""),
+            Text("""Additionally, Good Deed embraces Open Data. All Deeds and Posts are available to the public for free, forever, through the app and an API. Please read the Privacy Overview or Privacy Policy to know how your data is protected."""),
           ],
-        )
+        ),),
     );
   }
 }
