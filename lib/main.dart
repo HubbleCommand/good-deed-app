@@ -52,6 +52,12 @@ class GoodDeed extends StatelessWidget {
         // Notice that the counter didn't reset back to zero; the application
         // is not restarted.
         primarySwatch: Globals.styles.mainThemeColor,
+        textTheme: TextTheme(
+          /* TODO use
+              https://www.didierboelens.com/2020/05/material-textstyle-texttheme/
+              https://flutter.dev/docs/cookbook/design/themes
+           */
+        )
       ),
       home: MyHomePage(title: 'Good Deed Home Page'),
       /*routes:  {
