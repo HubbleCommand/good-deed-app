@@ -38,8 +38,6 @@ dependencies:
 
   image_picker: ^0.6.7+22 #Using newest version conflicts with http
 
-  flutter_launcher_icons: ^0.9.0
-
   #For geo operations
   ##geotools: ^0.4.0
   ##maybe just use the following...
@@ -81,6 +79,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  flutter_launcher_icons: ^0.9.0
+
 # google_sign_in & google_mobile_ads incompatability fixed by the following https://github.com/FirebaseExtended/flutterfire/issues/3712 found with search https://github.com/FirebaseExtended/flutterfire/issues?q=Duplicate+class+com.google.common.util.concurrent.ListenableFuture+found+in
 dependency_overrides:
   cloud_firestore: "0.14.0+2"
@@ -89,6 +89,11 @@ dependency_overrides:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/icon/icon.png"
+  remove_alpha_ios: true
 # The following section is specific to Flutter.
 flutter:
 
