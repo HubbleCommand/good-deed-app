@@ -49,7 +49,7 @@ android {
         applicationId "com.good_deed"
         //minSdkVersion 19
         minSdkVersion 29    //TODO check how low this can go, Firebase login stuff requires some newer stuff so may not be that high...
-        targetSdkVersion 29
+        targetSdkVersion 30 //Google appstore requirement to target API lvl 30
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
     }
