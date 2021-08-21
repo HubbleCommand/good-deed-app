@@ -146,6 +146,11 @@ class _AccountPageState extends State<AccountPage> {
                 _buildButton(button: Buttons.Email, onPressed: () async {
                   bool success = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailLogIn()));
                   setState(() {
+
+                    if(success == null){ //success can be null above if someone just goes back
+                      success = false;
+                    }
+
                     _loggedIn = success;
                   });
                 }),
