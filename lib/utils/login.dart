@@ -12,8 +12,10 @@ class LoginHelper{
 
     IdTokenResult userAuthed = await FirebaseAuth.instance.currentUser.getIdTokenResult();
 
+    var urlUri = Uri.parse(Globals.backendURL + Globals.beUserURI + '/login');
+
     final response = await http.Client().post(
-        Globals.backendURL + Globals.beUserURI + '/login',
+        urlUri,
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -55,8 +57,10 @@ class LoginHelper{
   }
 
   Future<Map<String, dynamic>> loginFacebook() async {
-    final AccessToken result = await FacebookAuth.instance.login();
-    final facebookAuthCredential = FacebookAuthProvider.credential(result.token); // Create a credential from the access token
+    final loginThing = await FacebookAuth.instance.login();
+    final result = FacebookAuthProvider.credential(loginThing.accessToken.token);
+    final facebookAuthCredential = FacebookAuthProvider.credential(result.token.toString()); // Create a credential from the access token
+
     return login(facebookAuthCredential);
   }
 

@@ -8,7 +8,7 @@ import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/forms/filter/deed.dart';
 import 'package:good_deed/widgets/forms/posters/deed.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/utils/image.dart';
@@ -240,7 +240,8 @@ class DeedsListState extends State<DeedsList> {
       url += (this.deedFilter != null && this.deedFilter.toUrlQuery().isNotEmpty) ? this.deedFilter.toUrlQuery() : '';
       url += skip != 0 ? '&start=$skip' : '';
       print(url);
-      final response = await http.Client().get(url);
+      var urlUri = Uri.parse(url);
+      final response = await http.Client().get(urlUri);
       print('GOT DEEDS');
       List<Deed> parsedDeeds = _parseDeeds(response.body);
       print('Number of deeds found: ' + parsedDeeds.length.toString());

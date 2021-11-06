@@ -49,8 +49,10 @@ class _AccountPageState extends State<AccountPage> {
 
       IdTokenResult userAuthed = await FirebaseAuth.instance.currentUser.getIdTokenResult();
 
+      var urlUri = Uri.parse(Globals.backendURL + Globals.beUserURI + '/login');
+
       final response = await http.Client().post(
-          Globals.backendURL + Globals.beUserURI + '/login',
+          urlUri,
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -96,6 +98,33 @@ class _AccountPageState extends State<AccountPage> {
                 ),
               ),
             );
+            /*
+            return showDialog(
+              context: context,
+              barrierDismissible: false, // user must tap button!
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text('Welcome to Good Deed!'),
+                  content: SingleChildScrollView(
+                    child: ListBody(
+                      children: const <Widget>[
+                        Text('We see that this is the first time you log into Good Deed. \n'),
+                        Text('We hope you enjoy using our app!'),
+                      ],
+                    ),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      child: const Text('Approve'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+             */
           },
         );
       }
@@ -129,8 +158,10 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 Text('You are not logged in. Please sign in'),
                 _buildButton(button: Buttons.Facebook, onPressed: () async {
-                  final AccessToken result = await FacebookAuth.instance.login();
-                  final facebookAuthCredential = FacebookAuthProvider.credential(result.token); // Create a credential from the access token
+                  //TODO check if this works! otherwise just copy/paste https://firebase.flutter.dev/docs/auth/social/#facebook
+                  final loginThing = await FacebookAuth.instance.login();
+                  final result = FacebookAuthProvider.credential(loginThing.accessToken.token);
+                  final facebookAuthCredential = FacebookAuthProvider.credential(result.token.toString()); // Create a credential from the access token
                   _login(facebookAuthCredential);
                 }),
                 _buildButton(button: Buttons.Google, onPressed: () async {

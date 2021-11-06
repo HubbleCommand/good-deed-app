@@ -5,7 +5,7 @@ import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/models/filters/location.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/layout.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:good_deed/widgets/forms/map_picker.dart';
 import 'package:good_deed/widgets/forms/user_picker.dart';
 

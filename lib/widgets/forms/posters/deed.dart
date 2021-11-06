@@ -9,10 +9,11 @@ import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/widgets/forms/image_picker.dart';
 import 'package:good_deed/widgets/loading_overlay.dart';
 import 'package:http/http.dart' as http;
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/widgets/forms/user_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FBAuth;
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 
 class NewDeedForm extends StatefulWidget {
 
@@ -57,7 +58,7 @@ class NewDeedFormState extends State<NewDeedForm> {
     }
 
     final response = await http.Client().post(
-        Globals.backendURL + '/deedsv2',
+        Uri.parse(Globals.backendURL + '/deedsv2'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -177,7 +178,8 @@ class NewDeedFormState extends State<NewDeedForm> {
                                 print('confirm $date');
                                 _occuredMS = date.millisecondsSinceEpoch;
                               },
-                              currentTime: _occuredMS == null ? DateTime.now() : _occuredMS,
+                              //currentTime: _occuredMS == null ? DateTime.now() : _occuredMS,
+                              currentTime: _occuredMS == null ? DateTime.now() : DateTime.fromMillisecondsSinceEpoch(_occuredMS),
                             );
                           },
                           child: Text('Time Deed Occured'),
@@ -207,7 +209,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                 options: MapOptions(
                     center: LatLng(45.5231, -122.6765),
                     zoom: 13.0,
-                    onTap: (LatLng latlng){
+                    onTap: (TapPosition tapPosition, LatLng latlng){
                       setState(() {
                         selectedPoint = latlng;
                       });

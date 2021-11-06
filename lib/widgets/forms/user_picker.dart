@@ -45,7 +45,9 @@ class _UserPickerScreenState extends State<UserPickerScreen> {
   void _fetchUserSuggestions(String name){
     String url = Globals.backendURL + Globals.beUserURI + '?name=' + name + '&start=' + _userSuggestions.length.toString();
 
-    http.Client().get(url).then((value) {
+    var urlUri = Uri.parse(url);
+
+    http.Client().get(urlUri).then((value) {
       List<User> parsedUsers = _parseUsers(value.body);
       if(parsedUsers.length == 0){
         timesFoundZeroUsers += 1; //TODO check if need to put in setState

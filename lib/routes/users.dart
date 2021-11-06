@@ -180,7 +180,8 @@ class UsersListState extends State<UsersList> {
 
       url += skip != 0 ? '&start=$skip' : '';
       print(url);
-      final response = await http.Client().get(url);
+      var urlUri = Uri.parse(url);
+      final response = await http.Client().get(urlUri);
       print('GOT USERS');
       List<User> parsedDeeds = _parseUsers(response.body);
       print('Number of users found: ' + parsedDeeds.length.toString());

@@ -1,7 +1,7 @@
 import 'package:good_deed/globals.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/utils/geo.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 class Deed {
   final String uuid;

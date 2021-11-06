@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:good_deed/models/filters/location.dart';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
 
 class MapPickerScreen extends StatefulWidget {
   final FilterLocation filter;
@@ -20,7 +21,7 @@ class _MapPickerScreenState extends State<MapPickerScreen> {
 
   _MapPickerScreenState({this.selectedPoint, this.radius});
 
-  void _handleTap(LatLng latlng) {
+  void _handleTap(TapPosition tapPosition, LatLng latlng) {
     setState(() {
       selectedPoint = latlng;
     });

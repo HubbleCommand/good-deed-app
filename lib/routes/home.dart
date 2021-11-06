@@ -139,7 +139,8 @@ Future<int> getDeedCount() async {
   var client = http.Client();
   DateTime now = new DateTime.now().subtract(new Duration(hours:24));
   String uri = Globals.backendURL + '/deedsv2/count?after=${now.millisecondsSinceEpoch}';
-  var response = await client.get(uri);
+  var urlUri = Uri.parse(uri);
+  var response = await client.get(urlUri);
   var body = convert.jsonDecode(response.body);
 
   //Ensures that if connection error between NodeJS and Neo4j, that loading spinner doesn't turn infinitely

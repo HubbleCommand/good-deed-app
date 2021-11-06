@@ -35,7 +35,9 @@ class _UserSelectorFormWidgetState extends State<UserSelectorFormWidget> {
     print("GETTING SUGGESTIONS");
     String url = Globals.backendURL + Globals.beUserURI + '?' + name ;
 
-    http.Client().get(url).then((value) {
+    var urlUri = Uri.parse(url);
+
+    http.Client().get(urlUri).then((value) {
       List<User> parsedUsers = _parseUsers(value.body);
       setState(() {
         _userSuggestions.clear();

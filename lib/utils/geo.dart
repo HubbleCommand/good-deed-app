@@ -1,5 +1,5 @@
 import 'dart:math';
-import 'package:latlong/latlong.dart';
+import 'package:latlong2/latlong.dart';
 
 class GeoUtils {
   static double sanitizeCoord(dynamic coord){
