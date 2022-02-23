@@ -40,8 +40,11 @@
 
   <script src="includes.js"></script>
 
-  <!-- Adsense -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7633712286971439" crossorigin="anonymous"></script>
+  <!--
+    Adsense
+    NOTE : crossorigin="anonymous" tag results in CORS errors from Google
+  -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7633712286971439" ></script>
   <!--<script async
           data-ad-client="ca-pub-123456789"
           data-adbreak-test="on"
