@@ -11,7 +11,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
-  //Initialise ad stuff, but ONLY
+  //Initialise ad stuff, but ONLY if on web, and ONLY if on mobile
   if(!kIsWeb){
     if(Platform.isIOS || Platform.isAndroid) {  //TODO Windows phone ?
       MobileAds.instance.initialize();
