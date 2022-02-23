@@ -5,12 +5,18 @@ import 'package:good_deed/routes/Routes.dart';
 import 'package:good_deed/routes/home.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 //import 'package:flutter_localizations/flutter_localizations.dart';
+import 'dart:io' show Platform;
+import 'package:flutter/foundation.dart' show kIsWeb;
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
 
-  //Initialise ad stuff
-  MobileAds.instance.initialize();
+  //Initialise ad stuff, but ONLY
+  if(!kIsWeb){
+    if(Platform.isIOS || Platform.isAndroid) {  //TODO Windows phone ?
+      MobileAds.instance.initialize();
+    }
+  }
 
   //Initialise Firebase login stuff
   await Firebase.initializeApp();
