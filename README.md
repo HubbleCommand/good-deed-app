@@ -43,3 +43,30 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter, view our
 [online documentation](https://flutter.dev/docs), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+## Web Hosting
+- Build for the web : https://docs.flutter.dev/get-started/web
+- Deploy to the web : https://docs.flutter.dev/deployment/web
+
+Build a web version with `flutter build web`
+
+Web hosting, once setup, is incredibly simple.
+
+Make sure to change `<base href="/">` in `index.html` to the actual path.
+
+The easiest way to serve is to just use Apache. You can put the web build wherever, 
+```
+<VirtualHost *:<port>>
+    --- other stuff ---
+
+    <Directory "/absolute/path/to/web/build">
+		Require all granted
+	</Directory>
+	Alias /gooddeed "/absolute/path/to/web/build/"
+
+    --- other stuff ---
+</VirtualHost>
+```
+Take note that `Directory` doesn't include a trailing `/`, while `Alias` does.
+Make sure that the www user has access to this path.
+With this properly setup, there is absolutely no need for a proxy server (either nodejs, python, or dart dhttpd)
