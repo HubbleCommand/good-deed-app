@@ -6,6 +6,7 @@ import 'package:good_deed/utils/layout.dart';
 import 'package:good_deed/widgets/picture_carousel.dart';
 import 'package:good_deed/utils/image.dart';
 
+//TODO convert to Stateful widget? If we need to fetch the deed, or if we want to be able to update in real time, a StatelessWidget won't do!
 class DeedView extends StatelessWidget{
   final _titleStyle = TextStyle(fontSize: 35.0);
   final _descriptionStyle = TextStyle(fontSize: 15.0);
@@ -16,34 +17,29 @@ class DeedView extends StatelessWidget{
 
   DeedView({Key key, this.deed}) : super(key: key);
 
-  Widget getUserThingy({BuildContext context, User user, double dimension}){
-    return InkWell(
-      onTap: (){
-        Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: user)));
-      },
-      /*child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(text),
-          ImageUtils.Image.buildIcon(user.avatarURL, 75.0, 75.0),
-        ],
-      ),*/
-      child: ImageUtil.buildIcon(user.avatarURL, 75.0, 75.0),
-    );
-  }
-
-  Widget _buildListThingy(List<User> data, {BuildContext context}){
-    return ListView.builder(
-        shrinkWrap: true,
-        physics: ClampingScrollPhysics(),
-        scrollDirection: Axis.horizontal, //Makes list horizontal
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          //return ImageUtils.Image.buildIcon(data[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
-          return getUserThingy(context: context, user: data[index], dimension: userProfileIconDimensions);
-        }
-    );
+  Widget _buildUserList(List<User> data, {BuildContext context}){
+    print(data);
+    if(data != null && data.isNotEmpty){
+      print('empty');
+      return ListView.builder(
+          shrinkWrap: true,
+          physics: ClampingScrollPhysics(),
+          scrollDirection: Axis.horizontal, //Makes list horizontal
+          itemCount: data.length,
+          itemBuilder: (context, index) {
+            //return ImageUtils.Image.buildIcon(data[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
+            //return getUserThingy(context: context, user: data[index], dimension: userProfileIconDimensions);
+            return InkWell(
+              onTap: (){
+                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: data[index])));
+              },
+              child: ImageUtil.buildIcon(data[index].avatarURL, 75.0, 75.0),
+            );
+          }
+      );
+    } else {
+      return Container();
+    }
   }
 
   Widget _buildPostersRow({BuildContext context}){
@@ -52,45 +48,9 @@ class DeedView extends StatelessWidget{
       //return _buildListThingy(deed.poster);
       return ImageUtil.buildIcon(deed.poster.avatarURL, userProfileIconDimensions, userProfileIconDimensions);
     } else {
-      //return Container();
       return ImageUtil.buildIcon(
           "https://www.clickz.com/wp-content/uploads/2016/03/anontumblr-300x271.png",
           userProfileIconDimensions, userProfileIconDimensions);
-    }
-  }
-
-  Widget _buildDiddersRow({BuildContext context}){
-    if(deed.didders != null && deed.didders.isNotEmpty){
-      return _buildListThingy(deed.didders, context: context);
-      /*return ListView.builder(
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          //scrollDirection: Axis.horizontal, //Makes list horizontal
-          itemCount: deed.didders.length,
-          itemBuilder: (context, index) {
-            return ImageUtils.Image.buildIcon(deed.didders[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
-          }
-      );*/
-    } else {
-      print("Y");
-      return Container();
-    }
-  }
-
-  Widget _buildGottersRow({BuildContext context}){
-    if(deed.gotters != null && deed.gotters.isNotEmpty){
-      return _buildListThingy(deed.gotters, context: context);
-      /*return ListView.builder(
-          shrinkWrap: true,
-          physics: ClampingScrollPhysics(),
-          scrollDirection: Axis.horizontal, //Makes list horizontal
-          itemCount: deed.gotters.length,
-          itemBuilder: (context, index) {
-            return ImageUtils.Image.buildIcon(deed.gotters[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions);
-          }
-      );*/
-    } else {
-      return Container();
     }
   }
 
@@ -101,7 +61,6 @@ class DeedView extends StatelessWidget{
         Padding(
           padding: EdgeInsets.all(16.0),
         ),
-        //ImageUtils.Image.buildIcon(deed.pictures.first, 190.0, 190.0),
         PictureCarouselWidget(imageUrls: deed.pictures, imageDimensions: 190.0,),
         LayoutUtils.splitter(),
 
@@ -122,7 +81,7 @@ class DeedView extends StatelessWidget{
             Container(
               margin: EdgeInsets.symmetric(vertical: 20.0),
               height: userProfileIconDimensions,
-              child: _buildDiddersRow(context: context),
+              child: _buildUserList(deed.didders, context: context),
             ),
           ],
         ),
@@ -133,11 +92,10 @@ class DeedView extends StatelessWidget{
             Container(
               margin: EdgeInsets.symmetric(vertical: 20.0),
               height: userProfileIconDimensions,
-              child: _buildGottersRow(context: context),
+              child: _buildUserList(deed.gotters, context: context),
             ),
           ],
         ),
-
 
         LayoutUtils.splitter(),
         Column(
@@ -161,5 +119,4 @@ class DeedView extends StatelessWidget{
       ],
     );
   }
-
 }
