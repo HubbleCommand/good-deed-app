@@ -140,6 +140,12 @@ Future<int> getDeedCount() async {
   DateTime now = new DateTime.now().subtract(new Duration(hours:24));
   String uri = Globals.backendURL + '/deedsv2/count?after=${now.millisecondsSinceEpoch}';
   var urlUri = Uri.parse(uri);
+  //TODO check what's going on here, sometimes it doesn't work without the headers!
+  /*var response = await client.get(urlUri,
+      headers: {
+        "Accept": "application/json",
+        "Access-Control-Allow-Origin": "*"
+      });*/
   var response = await client.get(urlUri);
   var body = convert.jsonDecode(response.body);
 
