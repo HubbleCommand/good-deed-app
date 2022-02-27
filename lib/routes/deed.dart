@@ -62,7 +62,7 @@ class DeedPageState extends State<DeedPage> {
     //print('Deed UUID : ' + this.deedUUID);
     _error = false;
     _loading = true;
-    77_fetchDeed(this.deedUUID);
+    //_fetchDeed(this.deedUUID);
 
 
     if(this.deed != null){
