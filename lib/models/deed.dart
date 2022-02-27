@@ -4,6 +4,7 @@ import 'package:good_deed/utils/geo.dart';
 import 'package:latlong2/latlong.dart';
 
 class Deed {
+  //TODO does final do anything we really need?
   final String uuid;
   final User poster;
   final List<User> didders;
@@ -29,11 +30,9 @@ class Deed {
 
     return new Deed(
       uuid          : json.containsKey('uuid') ? json['uuid'] as String : null,
-      //didders       : json['didders'].cast<User>(),
-      //didders       : List.from(json['didders']),
-      didders       : List<User>.from(json['didders'].map((x) => User.fromJson(x))),
-      gotters       : List<User>.from(json['gotters'].map((x) => User.fromJson(x))),
-      poster: User.fromJson(json['posters'][0]),  //TODO once only one poster is resturned, remove [0]!
+      didders       : json.containsKey('didders') ? List<User>.from(json['didders'].map((x) => User.fromJson(x))) : List<User>(),
+      gotters       : json.containsKey('gotters') ? List<User>.from(json['gotters'].map((x) => User.fromJson(x))) : List<User>(),
+      poster        : json.containsKey('gotters') ? User.fromJson(json['posters'][0]) : new User(),  //TODO once only one poster is resturned, remove [0]!
 
       //location      : json.containsKey('location') ? LatLong.fromJson((json['location'])) : null,
       location      : json.containsKey('location') ? LatLng(lat, long) : null,
