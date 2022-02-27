@@ -4,6 +4,9 @@ import 'package:good_deed/routes/account.dart';
 import 'package:good_deed/routes/about.dart';
 import 'package:good_deed/routes/home.dart';
 import 'package:good_deed/routes/deeds.dart' as D;
+import 'package:good_deed/routes/unknown.dart';
+import 'package:good_deed/routes/user.dart';
+import 'package:good_deed/routes/deed.dart';
 
 class Routes {
   static const String deeds = D.DeedsPage.routeName;
@@ -28,5 +31,8 @@ class Routes {
     UsersPage.routeName: (context) => UsersPage(),
     AccountPage.routeName: (context) => AccountPage(),
     AboutPage.routeName: (context) => AboutPage(),
+    UnknownPage.routeName: (context) => UnknownPage(),
+    //DeedPage.routeName: (context) => DeedPage(),
+    //UserPage.routeName :(context) => UserPage(),
   };
 }
