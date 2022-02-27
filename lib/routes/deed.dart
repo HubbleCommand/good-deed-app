@@ -30,9 +30,6 @@ class DeedPageState extends State<DeedPage> {
   bool _error;
   bool _loading = true;
 
-  /*DeedsPageState({this.deed, this.deedUUID}){
-    print(this.deedUUID);
-  }*/
   DeedPageState({deed, deedUUID}){
     this.deed = deed;
     this.deedUUID = deedUUID;
