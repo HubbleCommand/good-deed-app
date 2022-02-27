@@ -312,7 +312,9 @@ class DeedItem extends StatelessWidget {
         child: ImageUtil.buildIcon(_deed.pictures.first, 36.0, 36.0),
       ) : null,
       onTap: () {
-        Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed)));
+        //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed, deedUUID: _deed.uuid,)));
+        //Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => new DeedPage(deed: _deed, deedUUID: _deed.uuid,)));
+        Navigator.pushNamed(context, '/deed/' + _deed.uuid);
       },
     );
   }

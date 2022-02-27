@@ -6,9 +6,12 @@ import 'package:good_deed/widgets/buttons/button_logout.dart';
 
 class GDDrawer extends StatelessWidget {
   _pushRoute(context, route) {
-    Navigator.pop(context); //Or after?
-    Navigator.of(context).pushNamed(route);
+    //Navigator.pop(context); //Or after?
+    //Navigator.of(context).pushNamed(route);
+
     //Navigator.pushReplacementNamed(context, route);
+
+    Navigator.pushNamed(context, route);
   }
 
   @override
