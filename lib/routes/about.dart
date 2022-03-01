@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/privacy.dart';
 import 'package:http/http.dart' as http;
 import 'package:good_deed/widgets/drawer.dart';
@@ -10,12 +11,10 @@ class AboutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          title: Text("About Good Deed"),
-        ),
-        drawer: GDDrawer(),
-        body: SingleChildScrollView(child: Column(
+    return PageBuilder.build(
+        context: context,
+        basePath: routeName,
+        body : SingleChildScrollView(child: Column(
           children: [
             VersionWidget(),
             SizedBox(

@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/adds.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:http/http.dart' as http;
@@ -16,22 +17,18 @@ class UsersPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          title: Text("Users"),
-        ),
-        drawer: GDDrawer(),
-        body: Scaffold(
-          body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  //child: Deeds(),
-                  child: UsersList(),
-                ),
-              ]
-          ),
-        )
+    return PageBuilder.build(
+      context: context,
+      basePath: routeName,
+      body : Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              //child: Deeds(),
+              child: UsersList(),
+            ),
+          ]
+      ),
     );
   }
 }

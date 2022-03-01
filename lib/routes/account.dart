@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/drawer.dart';
 import 'package:good_deed/widgets/forms/account/email_login.dart';
 import 'package:good_deed/widgets/forms/account/email_signup.dart';
@@ -139,58 +140,55 @@ class _AccountPageState extends State<AccountPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          title: Text("Account"),
-        ),
-        drawer: GDDrawer(),
-        body:
-        _loggedIn ?
-          Column(
+    return PageBuilder.build(
+        context: context,
+        basePath: AccountPage.routeName,
+        body : _loggedIn ?
+        Column(
+          children: [
+            AccountView()
+          ],
+        )
+            :
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              AccountView()
+              Text('You are not logged in. Please sign in'),
+              _buildButton(button: Buttons.Facebook, onPressed: () async {
+                //TODO check if this works! otherwise just copy/paste https://firebase.flutter.dev/docs/auth/social/#facebook
+                final loginThing = await FacebookAuth.instance.login();
+                final result = FacebookAuthProvider.credential(loginThing.accessToken.token);
+                final facebookAuthCredential = FacebookAuthProvider.credential(result.token.toString()); // Create a credential from the access token
+                _login(facebookAuthCredential);
+              }),
+              _buildButton(button: Buttons.Google, onPressed: () async {
+                final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+                final GoogleSignInAuthentication googleAuth = await googleUser.authentication;  // Obtain the auth details from the request
+                final credential = GoogleAuthProvider.credential( // Create a new credential
+                  accessToken: googleAuth.accessToken,
+                  idToken: googleAuth.idToken,
+                );
+
+                _login(credential);
+              }),
+              _buildButton(button: Buttons.Email, onPressed: () async {
+                bool success = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailLogIn()));
+                setState(() {
+
+                  if(success == null){ //success can be null above if someone just goes back
+                    success = false;
+                  }
+
+                  _loggedIn = success;
+                });
+              }),
+              Divider(),
+              Text("Or sign up!"),
+              ElevatedButton(onPressed: (){Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailSignUp()));}, child: Text("Sign up with Email")),
             ],
-          )
-          :
-          Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('You are not logged in. Please sign in'),
-                _buildButton(button: Buttons.Facebook, onPressed: () async {
-                  //TODO check if this works! otherwise just copy/paste https://firebase.flutter.dev/docs/auth/social/#facebook
-                  final loginThing = await FacebookAuth.instance.login();
-                  final result = FacebookAuthProvider.credential(loginThing.accessToken.token);
-                  final facebookAuthCredential = FacebookAuthProvider.credential(result.token.toString()); // Create a credential from the access token
-                  _login(facebookAuthCredential);
-                }),
-                _buildButton(button: Buttons.Google, onPressed: () async {
-                  final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
-                  final GoogleSignInAuthentication googleAuth = await googleUser.authentication;  // Obtain the auth details from the request
-                  final credential = GoogleAuthProvider.credential( // Create a new credential
-                    accessToken: googleAuth.accessToken,
-                    idToken: googleAuth.idToken,
-                  );
-
-                  _login(credential);
-                }),
-                _buildButton(button: Buttons.Email, onPressed: () async {
-                  bool success = await Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailLogIn()));
-                  setState(() {
-
-                    if(success == null){ //success can be null above if someone just goes back
-                      success = false;
-                    }
-
-                    _loggedIn = success;
-                  });
-                }),
-                Divider(),
-                Text("Or sign up!"),
-                ElevatedButton(onPressed: (){Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new EmailSignUp()));}, child: Text("Sign up with Email")),
-              ],
-            ),
-          )
+          ),
+        )
     );
   }
 }

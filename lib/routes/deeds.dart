@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/utils/geo.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/forms/filter/deed.dart';
 import 'package:good_deed/widgets/forms/posters/deed.dart';
 import 'package:http/http.dart' as http;
@@ -23,46 +24,42 @@ class DeedsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          title: Text("Deeds"),
-        ),
-        drawer: GDDrawer(),
-        body: Scaffold(
-          body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Expanded(
-                  //child: Deeds(),
-                  child: DeedsList(filter: filterDeed,),
-                ),
-              ]
-          ),
-          floatingActionButton: InkWell(
-            splashColor: Colors.blue,
-            child: FloatingActionButton(
-              child: Icon(Icons.add),
-              tooltip: 'Create new deed',
-              onPressed: (){
-                if(FirebaseAuth.instance.currentUser != null){
-                  print(FirebaseAuth.instance.currentUser);
-                  Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NewDeedForm()));
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context){
-                        //return PrivacyAlertDialog();
-                        return AlertDialog(
-                          title: Text('Sign in to contribute'),
-                          content: Text('To be able to submit content, you must have an account & be signed in \n\nGo to the Drawer -> Account, and sign in or sign up with your preferred provider.'),
-                        );
-                      }
-                  );
-                }
-              },
+    return PageBuilder.build(
+      context : context,
+      basePath: '/deeds',
+      body: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Expanded(
+              //child: Deeds(),
+              child: DeedsList(filter: filterDeed,),
             ),
-          ),
-        )
+          ]
+      ),
+      floatingActionButton: InkWell(
+        splashColor: Colors.blue,
+        child: FloatingActionButton(
+          child: Icon(Icons.add),
+          tooltip: 'Create new deed',
+          onPressed: (){
+            if(FirebaseAuth.instance.currentUser != null){
+              print(FirebaseAuth.instance.currentUser);
+              Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new NewDeedForm()));
+            } else {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context){
+                    //return PrivacyAlertDialog();
+                    return AlertDialog(
+                      title: Text('Sign in to contribute'),
+                      content: Text('To be able to submit content, you must have an account & be signed in \n\nGo to the Drawer -> Account, and sign in or sign up with your preferred provider.'),
+                    );
+                  }
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 }

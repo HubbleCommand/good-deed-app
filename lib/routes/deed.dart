@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:good_deed/models/deed.dart';
+import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -29,6 +30,8 @@ class DeedPageState extends State<DeedPage> {
 
   bool _error;
   bool _loading = true;
+
+  bool _deedLiked = false;
 
   DeedPageState({deed, deedUUID}){
     this.deed = deed;
@@ -76,13 +79,21 @@ class DeedPageState extends State<DeedPage> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-        appBar: AppBar(
-          //TODO check that just checking _loading is enough i.e. deed isn't null and _error isn't true!
-          title: Text(_loading ? 'Loading...' : deed.title),  //Don't need to worry about text overflow, handled already
-        ),
-        //drawer: GDDrawer(),
-        body: _loading ? Container(child: Center(child: new CircularProgressIndicator(),)) : new DeedView(deed: this.deed,)
+    return PageBuilder.build(
+      context: context,
+      basePath: '/deeds',
+      body : _loading ? Container(child: Center(child: new CircularProgressIndicator(),)) :
+          Column(
+            children: [
+              //A temporary solution for liking a deed... as this page is already stateful, we are doing it here instead of in DeedView
+              IconButton(icon: Icon(Icons.favorite_border),
+                onPressed: () {
+                  //Based on _deedLiked, we send to either like or unlike
+                }
+              ),
+              new DeedView(deed: this.deed,)
+            ],
+          )
     );
   }
 }
