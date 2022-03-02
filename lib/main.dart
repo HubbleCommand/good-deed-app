@@ -94,7 +94,7 @@ class GoodDeed extends StatelessWidget {
       //FUCK SHITTY DOCUMENTATION LIKE WITH Concrete5
       //THIS IS STILL Nav 1.0
       //WHY ARE SHITTY FUCKING BLOG POSTS BEING PRESENTED AS OFFICIAL DOCUMENTATION
-      //Tbf this doesn't matter too much. It only affects
+      //Tbf this doesn't matter too much. It only affects web forward navigation (not even back navigation)
 
       //Flutter Router checks the home / initial route, then the routes table, then tries onGenerateRoute
       //We ignore no return : if onGenerateRoute
