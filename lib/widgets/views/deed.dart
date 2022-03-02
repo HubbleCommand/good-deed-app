@@ -3,6 +3,7 @@ import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/routes/user.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/buttons/like_deed.dart';
 import 'package:good_deed/widgets/picture_carousel.dart';
 import 'package:good_deed/utils/image.dart';
 
@@ -63,6 +64,7 @@ class DeedView extends StatelessWidget{
         ),
         PictureCarouselWidget(imageUrls: deed.pictures, imageDimensions: 190.0,),
         LayoutUtils.splitter(),
+        DeedLikeButton(deedUUID : this.deed.uuid),
 
         Row(
           children: [
