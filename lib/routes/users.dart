@@ -219,7 +219,8 @@ class UserItem extends StatelessWidget {
       ),
       trailing: ImageUtil.buildIcon(_user.avatarURL, 36.0, 36.0),
       onTap: () {
-        Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: _user)));
+        //Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: _user)));
+        Navigator.pushNamed(context, '/user/' + _user.uuid);
       },
     );
   }

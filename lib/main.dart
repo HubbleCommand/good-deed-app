@@ -75,7 +75,8 @@ class GoodDeed extends StatelessWidget {
            */
         )
       ),
-      //home: MyHomePage(title: 'Good Deed Home Page'),
+      //NOTE : home is where the app starts and is launched, but initialRoute is PUSHED after loading the base '/' route
+      home: MyHomePage(title: 'Good Deed Home Page'),
       initialRoute: MyHomePage.routeName, //replaces home
       /*routes:  {
         Routes.deeds: (context) => DeedsPage(),
@@ -87,6 +88,14 @@ class GoodDeed extends StatelessWidget {
       routes: Routes.routes,
 
       //Navigator 2.0
+
+      //FUCKING END ME
+      //FUCK FLUTTER DOCUMENTATION
+      //FUCK SHITTY DOCUMENTATION LIKE WITH Concrete5
+      //THIS IS STILL Nav 1.0
+      //WHY ARE SHITTY FUCKING BLOG POSTS BEING PRESENTED AS OFFICIAL DOCUMENTATION
+      //Tbf this doesn't matter too much. It only affects
+
       //Flutter Router checks the home / initial route, then the routes table, then tries onGenerateRoute
       //We ignore no return : if onGenerateRoute
       // ignore: missing_return
@@ -101,9 +110,14 @@ class GoodDeed extends StatelessWidget {
           return MaterialPageRoute(settings: settings, builder: (context) => DeedPage(deedUUID: uuid));
         }
 
-        /*if (uri.pathSegments.length == 2 && uri.pathSegments.first == 'user') {
+        if (uri.pathSegments.length == 2 && uri.pathSegments.first == 'user') {
           print('User URL id passed : ' + uri.pathSegments[1]);
           return MaterialPageRoute(settings: settings, builder: (context) => UserPage(userUUID: uri.pathSegments[1]));
+        }
+
+        /*if (uri.pathSegments.first == '') {
+          //return MaterialPageRoute(settings: settings, builder: (context) => MyHomePage(title: 'Good Deed Home Page'));
+          //return MaterialPageRoute(settings: settings, builder : Routes.routes['/home']);
         }*/
 
         if(!Routes.routes.containsKey(settings.name)){
