@@ -4,6 +4,7 @@ import 'package:good_deed/models/filters/deed.dart';
 import 'package:good_deed/models/user.dart';
 import 'package:good_deed/routes/deeds.dart';
 import 'package:good_deed/utils/layout.dart';
+import 'package:good_deed/widgets/buttons/follow_user.dart';
 
 class UserView extends StatelessWidget{
   final User user;
@@ -32,6 +33,7 @@ class UserView extends StatelessWidget{
         LayoutUtils.splitter(),
         this.user.story == null ? Container() : Text(this.user.story),
         LayoutUtils.splitter(),
+        UserFollowButton(userUUID : this.user.uuid),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
