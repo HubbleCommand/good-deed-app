@@ -3,6 +3,7 @@ import 'package:good_deed/models/deed.dart';
 import 'package:good_deed/utils/page_builder.dart';
 import 'package:good_deed/widgets/views/deed.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart' as FBAuth;
 import 'dart:convert';
 import '../globals.dart';
 
@@ -83,17 +84,10 @@ class DeedPageState extends State<DeedPage> {
       context: context,
       basePath: '/deeds',
       body : _loading ? Container(child: Center(child: new CircularProgressIndicator(),)) :
-          Column(
-            children: [
-              //A temporary solution for liking a deed... as this page is already stateful, we are doing it here instead of in DeedView
-              IconButton(icon: Icon(Icons.favorite_border),
-                onPressed: () {
-                  //Based on _deedLiked, we send to either like or unlike
-                }
-              ),
-              new DeedView(deed: this.deed,)
-            ],
-          )
+        //NOTE : DeedView's ListView MUST be encapsulated with something that defines it's size, like the Expanded used here
+        //https://flutteragency.com/add-a-listview-to-a-column/
+        //Expanded(child: new DeedView(deed: this.deed,),),
+        new DeedView(deed: this.deed,)
     );
   }
 }
