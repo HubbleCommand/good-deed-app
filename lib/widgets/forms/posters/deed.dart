@@ -14,6 +14,7 @@ import 'package:good_deed/globals.dart';
 import 'package:good_deed/widgets/forms/user_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart' as FBAuth;
 import 'package:positioned_tap_detector_2/positioned_tap_detector_2.dart';
+import 'dart:developer';
 
 class NewDeedForm extends StatefulWidget {
 
@@ -35,17 +36,23 @@ class NewDeedFormState extends State<NewDeedForm> {
   List<User> gotters = [];
 
   Future<bool> createDeed(Deed deed) async {
+    print(deed.didders);
+    print(deed.gotters);
     Map<String, dynamic> vars = {
       'title': deed.title,
       'description' : deed.description,
-      'poster'      : deed.poster,
-      'latitude'    : deed.location.latitude,
-      'longitude'   : deed.location.longitude,
-      'gotters'     : deed.gotters,
-      'didders'     : deed.didders,
+      //'latitude'    : deed.location != null ? deed.location.latitude : null,
+      //'longitude'   : deed.location != null ? deed.location.longitude: null,
+      //Only send UUIDs, takes WAY less space
+      'poster'      : deed.poster.uuid,
+      'gotters'     : [],
+      //'didders'     : deed.didders,
+      'didders'     : [],
       'time'        : deed.time,
       'pictures'    : deed.pictures
     };
+    deed.gotters.forEach((user) { vars['gotters'].add(user.uuid); });
+    deed.didders.forEach((user) { vars['didders'].add(user.uuid); });
 
     FBAuth.IdTokenResult userAuthed = await FBAuth.FirebaseAuth.instance.currentUser.getIdTokenResult();
 
@@ -56,6 +63,8 @@ class NewDeedFormState extends State<NewDeedForm> {
         vars['token'] = userAuthed.token;
       }
     }
+    print("VARS: ");
+    print(vars.toString());
 
     final response = await http.Client().post(
         Uri.parse(Globals.backendURL + '/deedsv2'),
@@ -256,6 +265,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                         time            : _occuredMS
                     );
                     print(newDeed);
+                    print(inspect(newDeed));
                     if(await createDeed(newDeed)) {
                       print('DID GOOD');
                     } else {
@@ -264,6 +274,7 @@ class NewDeedFormState extends State<NewDeedForm> {
                     overlay.hide();
                     Navigator.of(context).pop();
                   } catch (e) {
+                    print(e);
                     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: const Text('Error creating deed!'),
                       duration: const Duration(seconds: 3),
