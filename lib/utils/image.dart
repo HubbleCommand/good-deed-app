@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -5,7 +6,7 @@ import 'dart:math';
 class ImageUtil {
   static Widget buildIcon(String source, num height, num width){
     if(source == null) {
-      return Icon(Icons.report, size: min(height, width));
+      return Icon(CupertinoIcons.question_circle, size: min(height, width));
     } else {
       return Image.network(
         source,
@@ -20,7 +21,7 @@ class ImageUtil {
           );
         },
         errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
-          return Icon(Icons.report, size: min(height, width));
+          return Icon(CupertinoIcons.question_circle, size: min(height, width));
         },
       );
     }
