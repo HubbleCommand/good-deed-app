@@ -35,6 +35,11 @@ class DeedLikeButtonState extends State<DeedLikeButton> {
   Future<void> _fetchIsDeedLiked(String uuid) async {
     print('Current user');
     print(FBAuth.FirebaseAuth.instance.currentUser);
+
+    if(FBAuth.FirebaseAuth.instance.currentUser == null){
+      return;
+    }
+
     String userUUID = FBAuth.FirebaseAuth.instance.currentUser.uid;
     String url = Globals.backendURL + '/deedsv2/likes?deed=' + deedUUID + '&user=' + userUUID;
 
@@ -51,6 +56,9 @@ class DeedLikeButtonState extends State<DeedLikeButton> {
   }
 
   Future<void> _likeOrUnlikeDeed(String uuid, bool like) async {
+    if(FBAuth.FirebaseAuth.instance.currentUser == null){
+      return;
+    }
     print('Is deed liked ?');
     print(like);
     FBAuth.IdTokenResult userAuthed = await FBAuth.FirebaseAuth.instance.currentUser.getIdTokenResult();

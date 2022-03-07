@@ -35,6 +35,11 @@ class UserFollowButtonState extends State<UserFollowButton> {
   Future<void> _fetchIsUserFollowed(String uuid) async {
     print('Current user');
     print(FBAuth.FirebaseAuth.instance.currentUser);
+
+    if(FBAuth.FirebaseAuth.instance.currentUser == null){
+      return;
+    }
+
     String userUUID = FBAuth.FirebaseAuth.instance.currentUser.uid;
     String url = Globals.backendURL + '/deedsv2/likes?deed=' + userUUID + '&user=' + userUUID;
 
@@ -51,6 +56,10 @@ class UserFollowButtonState extends State<UserFollowButton> {
   }
 
   Future<void> _followOrUnfollowUser(String uuid, bool follows) async {
+    if(FBAuth.FirebaseAuth.instance.currentUser == null){
+      return;
+    }
+
     print('Is user followed ?');
     print(follows);
     FBAuth.IdTokenResult userAuthed = await FBAuth.FirebaseAuth.instance.currentUser.getIdTokenResult();
