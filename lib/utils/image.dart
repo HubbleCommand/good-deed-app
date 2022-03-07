@@ -7,16 +7,21 @@ class ImageUtil {
     if(source == null) {
       return Icon(Icons.report, size: min(height, width));
     } else {
-      return Container(
-          width: width,
-          height: height,
-          decoration: new BoxDecoration(
-              shape: BoxShape.circle,
-              image: new DecorationImage(
-                  fit: BoxFit.fill,
-                  image: new NetworkImage(source)
-              )
-          )
+      return Image.network(
+        source,
+        loadingBuilder:(BuildContext context, Widget child, ImageChunkEvent loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Center(
+            child: CircularProgressIndicator(
+              value: loadingProgress.expectedTotalBytes != null ?
+              loadingProgress.cumulativeBytesLoaded / loadingProgress.expectedTotalBytes
+                  : null,
+            ),
+          );
+        },
+        errorBuilder: (BuildContext context, Object exception, StackTrace stackTrace) {
+          return Icon(Icons.report, size: min(height, width));
+        },
       );
     }
   }
