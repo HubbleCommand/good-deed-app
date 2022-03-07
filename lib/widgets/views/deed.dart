@@ -34,7 +34,7 @@ class DeedView extends StatelessWidget{
               onTap: (){
                 Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new UserPage(user: data[index])));
               },
-              child: ImageUtil.buildIcon(data[index].avatarURL, 75.0, 75.0),
+              child: ImageUtil.buildIcon(data[index].avatarURL, userProfileIconDimensions, userProfileIconDimensions),
             );
           }
       );
@@ -57,6 +57,7 @@ class DeedView extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    print(deed.didders);
     return ListView(
       children: <Widget>[
         Padding(
