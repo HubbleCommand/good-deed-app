@@ -49,6 +49,9 @@ Many 3rd party services have security cross-origin requirements. Notably, google
 Hence, instead of just hitting 'run', make sure to execute the following command when testing web versions:
 `flutter run -d chrome --web-port 5000`
 
+Also note that for using Firebase on the web, you need to add your [Firebase project config](https://firebase.google.com/docs/web/setup), and then call the Firebase configure method.
+This is currently to be held in a file called includes.js, referenced by web/index.html.
+
 ## Web Hosting
 - Build for the web : https://docs.flutter.dev/get-started/web
 - Deploy to the web : https://docs.flutter.dev/deployment/web
